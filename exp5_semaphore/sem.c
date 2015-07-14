@@ -9,6 +9,7 @@
 #include <asm/io.h>
 //#include <string.h>
 
+
 sem_t semtable[SEMTABLE_LEN];
 int cnt = 0;
 
