@@ -205,7 +205,7 @@ IDRT同GDTR
 
 虚拟基址经过段式寻址方式转化为线性地址，转换过程如下：
 
-![段式寻址方式](https://github.com/Wangzhike/HIT-Linux-0.11/tree/master/1-boot/picture/segment-addressing.jpg)
+![段式寻址方式](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/1-boot/picture/segment-addressing.jpg)
 
 ##### 进入保护模式
 
@@ -245,11 +245,11 @@ jmpi	0,8		! jmp offset 0 of segment 8 (cs)
 寻址方式如[段式寻址过程图](#段式寻址过程图)所示
 ## bootsect.s的流程图
 
-![bootsect.s flow](https://github.com/Wangzhike/HIT-Linux-0.11/tree/master/1-boot/picture/boot-flow-1.jpg)	
+![bootsect.s flow](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/1-boot/picture/boot-flow-1.jpg)	
 
 1. 计算机上电，BIOS初始化中断向量表之后，会将启动设备的第一个扇区(即引导扇区)读入内存地址`0x07c00(31kb)`处，并跳转到此处执行，由此系统的控制权由BIOS转交给bootsect.s。而为了方便加载内核模块，bootsect.s首先将自己移动到`0x90000(576kb)`处。这样的移动是多此一举。	
 
 ## setup.s流程图
 
-![setup.s flow](https://github.com/Wangzhike/HIT-Linux-0.11/tree/master/1-boot/picture/boot-flow-2.jpg)			
+![setup.s flow](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/1-boot/picture/boot-flow-2.jpg)			
 2. 计算机上电后，BIOS会在物理地址0处开始初始化中断向量表，其中有256个中断向量，每个中断向量占用4个字节，共1KB，在物理内存地址`0x00000-0x003fff`处，这些中断向量供BIOS中断使用。这就要求，如果操作系统的引导程序在加载操作系统时使用了BIOS中断来获取或显示一些信息时，内存中这最开始的1KB数据不能被覆盖。而操作系统的内核代码最好起始于物理内存开始处，这样内核空间的代码地址等于实际的物理地址，便于对内核代码和数据进行操作，这就需要将内核代码加载到内存`0x00000`处。如此就产生了矛盾。所以`bootsect.s`在载入内核模块时，先将其加载到`0x10000`处，之后`setup.s`利用BIOS中断读取完硬件参数，再有`setup.s`将内核模块从`0x10000-0x8ffff`处搬运到`0x00000-0x7ffff`处。这样先加载内核模块到其他地方再移到到内存起始位置是多此一举。
