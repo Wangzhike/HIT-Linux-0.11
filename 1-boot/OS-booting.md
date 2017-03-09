@@ -19,7 +19,6 @@
 5. [setup.s流程图](5. setup.s流程图)
 
 ## 1. 实验内容     
-实验内容
 ---
 1. 改写`/boot/bootsect.s`能在屏幕上打印诸如"XXX is booting"的提示信息
 2. 改写`/boot/setup.s`完成以下功能：
