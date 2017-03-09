@@ -17,6 +17,7 @@
          - [3.4.1.4 进入保护模式](#3.4.1.4 进入保护模式)
  4. [bootsect.s的流程图](#4. bootsect.s的流程图)
  5. [setup.s流程图](5. setup.s流程图)
+
 ## 1. 实验内容
 
 1. 改写`/boot/bootsect.s`能在屏幕上打印诸如"XXX is booting"的提示信息
