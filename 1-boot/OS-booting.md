@@ -1,5 +1,6 @@
 # 操作系统的引导
 
+[TOC]    
 ## 目录
 1. [实验内容](#实验内容)
 2. [int 0x10中断显示字符或字符串](#2. int 0x10中断显示字符或字符串)
@@ -16,10 +17,9 @@
          - [3.4.1.3 段式寻址过程图](#3.4.1.3 段式寻址过程图)
          - [3.4.1.4 进入保护模式](#3.4.1.4 进入保护模式)  
 4. [bootsect.s的流程图](#4. bootsect.s的流程图)     
-5. [setup.s流程图](5. setup.s流程图)
+5. [setup.s流程图](#5. setup.s流程图)
 
-## 1. 实验内容     
----
+## 1. 实验内容     
 1. 改写`/boot/bootsect.s`能在屏幕上打印诸如"XXX is booting"的提示信息
 2. 改写`/boot/setup.s`完成以下功能：
    1. bootsect.s能完成setup.s的载入，并跳转到setup.s开始地址执行。而setup.s向屏幕输出一行"Now we are in SETUP"。
@@ -217,12 +217,12 @@ IDRT同GDTR
    +----------------------------------+------------------------------------+
 ```
 
-##### 3.4.1.3 段式寻址过程图
-
+##### 3.4.1.3 段式寻址过程图     
+段式寻址过程图
+---
 虚拟基址经过段式寻址方式转化为线性地址，转换过程如下：
 
-![段式寻址方式](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/1-boot/picture/segment-addressing.jpg)
-
+![段式寻址方式](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/1-boot/picture/segment-addressing.jpg)     
 ##### 3.4.1.4 进入保护模式
 
 进入保护模式前需要设置好使用的段描述符表，包括全局描述符表`GDT`和中断描述符表`IDT`
