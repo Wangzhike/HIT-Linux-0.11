@@ -11,7 +11,8 @@
 ## 1. 操作系统的引导
 参见[操作系统的引导](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/1-boot/OS-booting.md)。
 
-## 2. 系统调用
+## 2. 系统调用    
+参见[系统调用](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/2-syscall/2-syscall.md)
 
 ## 3. 进程运行轨迹的跟踪与统计
 
