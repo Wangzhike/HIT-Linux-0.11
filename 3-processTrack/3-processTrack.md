@@ -452,4 +452,4 @@ Linux 0.11将进程的状态分为5类：
 
   ![先wake_up再退出2](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/wake_before_exit-sleep_2.png)
 
-3. 
+
