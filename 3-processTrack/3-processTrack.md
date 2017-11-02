@@ -297,3 +297,159 @@ int copy_page_tables(unsigned long from,unsigned long to,long size)
 ##### 2.1.4 main函数中的fork和pause都用内联函数的原因
 `copy_process`在处理进程1(init进程)的*640KB*物理内存对应的页表项时将其属性设置为只读，但进程1的父进程进程0的*640KB*的物理内存的对应的页表项的属性不变，因此在进程0使用内联的`fork()`API创建出子进程进程1之后，进程0对内存中的数据仍是可读可写的，但子进程进程1对内存确是只读的。假设该`fork()`API不是以内联形式实现的，而是进程0通过函数调用形式实现的，那么进程0在调用`fork()`API的过程中肯定会使用到用户态堆栈，所以进程0调用`fork()`API后其用户态堆栈不为空。而`fork()`API调用返回后，可能是进程0先于进程1执行，也可能是进程1先于进程0执行。如果是进程1先执行，那么一旦进程1开始写数据或者进行函数调用就会引发写时复制，由于局部变量是存储在用户栈中的，而函数调用需要借助栈进行参数传递和返回地址保存，而栈作为内存中的空间，自然也是只读的，所以进程1写数据或者进行函数调用都会引发写时复制，从而引起内存管理程序在主内存区为进程1分配1页内存作为其用户栈，而进程1的用户栈最初设置的就是共用的进程0的用户栈，所以内存管理程序在为进程1分配好用户栈的空间后，会将此时进程0的用户栈的内容复制到该内存中，以保证此时进程1的用户栈和进程0的内容仍然是相同的，由于进程0的用户栈非空，所以进程1的用户栈会包含有进程0调用`fork()`API后的返回地址，而这个数据对于进程1而言是没有意义的，假如进程1接下来要执行的指令是从栈中取数据，那么此刻从栈中取到的自然是进程0调用`fork()`API后的返回地址，从而造成了进程1的数据混乱。为了避免进程0使用用户栈导致进程1的执行混乱，要保证进程0在进程1执行栈操作之前禁止使用其用户栈，所以也要保证进程0调用完`fork()`API之后，仍然不能使用堆栈，所以`puase()`API也需要以内联形式实现。    
 
+## 实验过程    
+
+### 实验结果    
+1. 样本程序process.c的运行    
+  多进程样本程序*process.c*以**完全二叉树形式组织子进程**，其进程关系树如下所示：    
+  ```relationship
+        R
+       / \
+     N1   N2
+    / \   /
+   N3 N4 N5
+  ```
+
+  - 在Ubuntu上运行    
+    运行*process*可执行程序的输出：    
+	![在Ubuntu上运行*process*可执行程序的输出](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_out_in-Ubuntu.png)
+
+	在*process*可执行程序运行的同时，利用`ps -fHC process`显示运行`./process`命令过程中各个进程之间的关系和树状结构，其输出如下：    
+	![在Ubuntu上利用`ps -fHC process`命令查看运行`./process`命令时的输出](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_relationship_in-Ubuntu.png)
+	
+	可以看出，在Ubuntu上运行时，*process.c*程序的各个进程对应到具体pid的进程关系树如下：    
+	```relationship
+		    R
+	       8877
+           / \
+	     N1   N2
+	   8878   8880
+       / \    /
+      N3  N4  N5
+    8879 8881 8882
+	```
+
+  - 在修改过的Linux 0.11上运行    
+    运行*process*可执行程序的输出：    
+	![在修改过的Linux 0.11上运行*process*可执行程序的输出](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_out.png)
+
+	可以看出，在修改过的Linux 0.11上运行时，*process.c*程序的各个进程对应到具体pid的进程关系树如下：    
+	```relationship
+        R
+        14
+       /  \
+      N1   N2
+      15   16
+     / \   /
+    N3 N4 N5
+    18 19 17
+	```
+
+	从中也可以看出，Ubuntu与原始的Linux 0.11在进程调度算法上的差异。    
+
+2. process.log日志文件的生成分析    
+  - 生成的*process.log*文件如下：    
+    ![*process.log*文件内容](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log-std.png)
+
+  - 添加了输出信息所在函数提示的新的*process.log*文件如下：    
+    ![有输出信息所在函数提示的*process.log*文件内容](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log-functions.png)
+
+	如上图所示，*process.log*文件中加入了我自己关于进程运行状态的分析。    
+
+### 1. 进程状态的切换
+正如实验报告所述：    
+> 寻找所有发生进程状态切换的代码点，并在这些代码点添加适当的代码，需要对kernel下的*fork.c*,*sched.c*有通盘的了解，而*exit.c*也会涉及到。总的来说，Linux 0.11支持四种进程状态的转移：就绪到运行，运行到就绪，运行到睡眠和睡眠到就绪，此外还有新建和退出两种情况。其中就绪和运行之间的状态转移是通过`schedule()`(它亦是调度算法所在)完成的；运行到睡眠依靠的是`sleep_on()`和`interruptible_sleep_on()`，还有进程主动睡觉的系统调用`sys_pause()`和`sys_waitpid()`；睡眠到就绪的转移依靠的是`wake_up()`。所以只要在这些函数的适当位置插入适当的处理语句就能完成进程运行轨迹的全面跟踪了。    
+
+Linux 0.11将进程的状态分为5类：    
+```c
+#define TASK_RUNNING		0
+#define TASK_INTERRUPTIBLE	1
+#define TASK_UNINTERRUPTIBLE	2
+#define TASK_ZOMBIE		3
+#define TASK_STOPPED		4
+```
+
+**进程的状态切换一定是由内核程序完成的，所以一定发生在内核态。**下图显示了进程的状态及转移关系：    
+![进程状态及转移关系](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/进程状态及转移关系.png)
+
+我们依据上图沿着进程从新建到退出的整个生命期来看下其中涉及进程状态切换的各个内核函数的作用。    
+1. fork新建进程    
+  我们已经知道`fork()`API最后对应的内核实现函数为`sys_fork`，而`sys_fork`的核心为函数`copy_process`，其负责完成进程的创建。`copy_process`就进程状态的切换来说比较简单：先为新建进程申请一页内存存放其PCB，将子进程的状态先设置为不可中断睡眠(TASK_UNINTERRUPTIBLE)，开始为子进程复制并修改父进程的PCB数据。完成后将子进程的状态设置为就绪态(TASK_RUNNING)。这个过程对应了进程新建(N)和就绪(J)两种状态。    
+
+2. schedule调度函数    
+  `schedule()`首先对所有任务(不包括进程0)进行检测，唤醒任何一个已经得到信号的进程(调用sys_waitpid等待子进程结束的父进程，在子进程退出后，会在此处被唤醒)，所以这里需要记录进程变为就绪(J)。接下来开始选择下一个要运行的进程。首先从末尾开始逆序检查`task`数组中的所有任务(不包括进程0)，在就绪状态的任务中选取剩余时间片(`counter`值)最大的任务，这里有两种特殊情况：如果有就绪状态的任务但它们的时间片都为0，就根据任务的优先级(`priority`值)重新设置所有任务(包括睡眠的任务)的时间片值`counter`，再重新从`task`数组末尾开始选出时间片最大的就绪态进程；或者当前没有就绪状态的进程，那么就默认选择进程0作为下一个要运行的进程。最后，选出了接下来要运行的进程，其在`task`数组中的下标为`next`，调用`switch_to(next)`进行进程切换。这里需要记录进程变为运行(R)，以及可能的当前运行态的进程变为就绪(J)，当然也可能选出的`next`仍然是当前进程，那么就不需要进行进程切换。    
+
+3. sys_pause主动睡觉    
+  正如上面所提到的，当系统无事可做时(当前没有可以运行的进程)时就会调度进程0执行，所以`schedule`调度算法不会在意进程0的状态是不是就绪态(TASK_RUNNING)，进程0可以直接从睡眠切换到运行。而进程0会马上调用`pause()`API主动睡觉，在最终的内核实现函数`sys_pause`中又再次调用`schedule()`函数。也就是说，系统在无事可做时会触发这样一个循环：`schedule()`调度进程0执行，进程0调用`sys_pause()`主动睡觉，从而引发`schedule()`再次执行，接下来进程0又再次执行，循环往复，直到系统中有其他进程可以执行。而这个循环每执行一次的时间很短，所以在系统无事可做时，这个过程将十分频繁地重复，所以如果一五一十地记录下这个循环中进程0从睡眠(W)->运行(R)->睡眠(W)的过程，那么最终生成的log文件会因为这一频繁的循环而变得特别庞大，要比不这样记录的log文件大小上大上至少10倍量级！所以，为了简化log文件中这个不必要的重复信息，可以简单地认为在系统无事可做时，进程0的状态始终是等待(W)，等待有其他可运行的进程；也可以叫运行态(R)，因为它是唯一一个在CPU上运行的进程，只不过运行的效果是等待，我采用第二种简化。    
+  这是一五一十记录进程0从睡眠(W)->运行(R)->睡眠(W)循环生成的log文件(进程0的重复信息造成数据统计脚本*stat_log.py*因检测到重复数据而出错！！！)：    
+  ![记录进程0循环过程的log文件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log_large.png)
+
+  注意到该log文件有*61566*行！而简化后的log文件只有*526*行，行数上相差一百倍！！！
+
+  这是简化的认为系统无事可做时进程0的状态始终是运行(R)生成的log文件：    
+  ![简化认为系统无事可做时进程0的状态始终是运行生成的log文件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log_normal.png)
+
+4. 不可中断睡眠sleep_on    
+  `sleep_on()`算是内核中比较晦涩难懂的函数了，因为它利用几个进程因等待同一资源而让出CPU都陷入`sleep_on()`函数的其各自内核栈上的`tmp`指针，将这些进程隐式地链接起来形成一个等待队列。    
+  `sleep_on()`的参数`p`是进程结构体`task_struct`的指针的指针，在调用时通常传入的是特定的`task_strcut *`类型的变量的地址，如文件系统内存i节点的`i_wait`指针，内存缓冲操作中的`buffer_wait`指针等。`tmp`是存储在对应进程内核堆栈上的函数局部变量。下面我们通过分析一个具体的三个进程(pid)：5,6,7为等待内存缓冲区而依次调用`sleep_on()`的例子，分析下等待队列的形成过程：    
+  1. 进程5调用sleep_on(&buffer_wait)    
+    初始时`buffer_wait`的值为NULL，所以：    
+	```c
+	tmp = NULL(*p);
+	buffer_wait(*p)= task[5](current);
+	```
+
+	接着调用`schedule()`函数让出CPU切换到进程6执行，而进程5运行停留在`sleep_on`函数中。    
+
+  2. 进程6调用sleep_on(&buffer_wait)    
+    此时`buffer_wait`的值为`task[5]`，所以：    
+	```c
+    tmp = task[5](*p);
+	buffer_wait(*p) = task[6](current);
+	```
+
+	接着调用`schedule()`函数让出CPU切换到进程7执行，而进程6运行停留在`sleep_on`函数中。    
+
+  3. 进程7调用sleep_on(&buffer_wait)    
+    此时`buffer_wait`的值为`task[6]`，所以：    
+	```c
+    tmp = task[6](*p);
+	buffer_wait(*p) = task[7](current);
+	```
+
+	接着调用`schedule()`函数让出CPU切换到其他进程执行，而进程7运行同样停留在`sleep_on`函数中。    
+
+  最终的内存中各个进程内核堆栈以及`buffer_wait`变量的内容如下：    
+  ![各个进程内核堆栈以及`buffer_wait`变量的内容](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/3个进程的sleep_on分析.png)
+
+  所以要记录进程转变为睡眠(J)。对于不可中断睡眠(TASK_UNINTERRUPTIBLE)只能由`wake_up()`函数显式地从这个隐式的等待队列头部唤醒队列头进程，再由这个队列头部进程执行`schedule()`函数后面的`if (tmp) tmp->state=0;`通过由`tmp`变量链接起来的等待队列依次唤醒等待的进程。所以这里要记录进程唤醒(J)。    
+
+4. 不可中断睡眠interruptible_sleep_on    
+  可中断睡眠与不可中断睡眠相比，除了可以用`wake_up`唤醒外，也可以用信号(给进程发送一个信号，实际上就是将进程PCB中维护的一个向量的某一位置位，进程需要在合适的时候处理这一位。)来唤醒，比如在`schedule()`中一上来就唤醒得到信号的进程。这样的唤醒会出现一个问题，那就是可能会唤醒等待队列中间的某个进程，此时就需要对和`sleep_on`中形成机制一样的等待队列进行适当调整：从`schedule()`调用唤醒的当前进程如果不是等待队列头进程，则将队列头唤醒，并通过`goto repeat`让自己再去睡眠。后续和`sleep_on`一样，从队列头进程这里利用`tmp`变量的链接作用将后续的进程唤醒。由于队列头进程唤醒后，只要依靠`tmp`变量就可以唤醒后续进程，所以已经不再需要使用队列头指针`*p`，将其值设置为NULL，从而为再次将其作为`interruptible_sleep_on`函数的参数做准备(因为`wake_up`已经做了同样的处理，这里似乎没有必要？)。    
+
+5. 显式唤醒wake_up    
+  `wake_up`的作用就是显式唤醒队列头进程，所以这里需要记录进程唤醒(J)。唤醒队列头之后，`sleep_on`和`interruptible_sleep_on`会将队列的后续进程依次唤醒，所以不再需要该等待队列的头指针`*p`，将其置为NULL，为后续再次将其作为`sleep_on`和`interruptible_sleep_on`函数参数做好初始化。    
+
+6. 进程退出do_exit    
+  `do_exit`将进程的状态设为僵尸态(TASK_ZOMBIE)，所以这里需要记录进程的退出(E)。子进程终止时，它与父进程之间的关联还会保持，直到父进程也正常终止或父进程调用`wait`才告结束。因此，进程表中代表子进程的表项不会立即释放。虽然子进程已经不再运行，但它仍然存在于系统中，因为它的退出码还需要保存起来，以备父进程今后的`wait`调用使用。    
+
+7. 父进程等待子进程退出sys_waitpid    
+  `wait`系统调用将暂停父进程直到它的子进程结束为止，它的内核实现函数为`sys_waitpid`。`sys_waitpid`的`options`参数若为`WNOHANG`就可以阻止`sys_waitpid`将父进程的执行挂起。这里需要在除去`WNOHANG`选项的地方记录父进程阻塞睡眠(W)而阻塞的情况。    
+
+最后，我对添加了包含输出信息所在函数的log文件进行了分析，写一些还比较有价值的结论。    
+1. sys_waitpid调用是子进程先退出父进程才醒来    
+  子进程退出的最后一步是通知父进程自己的退出，目的是唤醒正在等待此时间的父进程。从时序上说，应该是子进程先退出，父进程才醒来。下面来看下log文件中的一些印证了这个结论的记录：    
+  ![子进程先退出父进程才醒来1](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_1.png)
+
+  ![子进程先退出父进程才醒来2](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_2.png)
+
+  ![子进程先退出父进程才醒来3](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_3.png)
+
+  第三个图片实际上对应了执行`gcc -o process process.c`命令的过程：系统先建立进程8执行命令，因为gcc生成可执行文件分为预处理，编译，汇编，链接四个子阶段，分别对应进程9,10,11,12四个子进程的依次执行。    
+
+2. sleep_on调用是要退出的进程先wake_up显式唤醒睡眠进程才退出    
+  ![先wake_up再退出1](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/wake_before_exit-sleep_1.png)
+
+  ![先wake_up再退出2](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/wake_before_exit-sleep_2.png)
+
+3. 
