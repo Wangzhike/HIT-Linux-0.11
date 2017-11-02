@@ -391,30 +391,28 @@ Linux 0.11将进程的状态分为5类：
   `sleep_on()`算是内核中比较晦涩难懂的函数了，因为它利用几个进程因等待同一资源而让出CPU都陷入`sleep_on()`函数的其各自内核栈上的`tmp`指针，将这些进程隐式地链接起来形成一个等待队列。    
   `sleep_on()`的参数`p`是进程结构体`task_struct`的指针的指针，在调用时通常传入的是特定的`task_strcut *`类型的变量的地址，如文件系统内存i节点的`i_wait`指针，内存缓冲操作中的`buffer_wait`指针等。`tmp`是存储在对应进程内核堆栈上的函数局部变量。下面我们通过分析一个具体的三个进程(pid)：5,6,7为等待内存缓冲区而依次调用`sleep_on()`的例子，分析下等待队列的形成过程：    
     1. 进程5调用sleep_on(&buffer_wait)    
-    初始时`buffer_wait`的值为NULL，所以：    
+       初始时`buffer_wait`的值为NULL，所以：    
 	```c
 	tmp = NULL(*p);
 	buffer_wait(*p)= task[5](current);
 	```    
 	接着调用`schedule()`函数让出CPU切换到进程6执行，而进程5运行停留在`sleep_on`函数中。    
     2. 进程6调用sleep_on(&buffer_wait)    
-    此时`buffer_wait`的值为`task[5]`，所以：    
+       此时`buffer_wait`的值为`task[5]`，所以：    
 	```c
-    tmp = task[5](*p);
+        tmp = task[5](*p);
 	buffer_wait(*p) = task[6](current);
 	```    
 	接着调用`schedule()`函数让出CPU切换到进程7执行，而进程6运行停留在`sleep_on`函数中。    
     3. 进程7调用sleep_on(&buffer_wait)    
-    此时`buffer_wait`的值为`task[6]`，所以：    
+       此时`buffer_wait`的值为`task[6]`，所以：    
 	```c
-    tmp = task[6](*p);
+        tmp = task[6](*p);
 	buffer_wait(*p) = task[7](current);
 	```    
 	接着调用`schedule()`函数让出CPU切换到其他进程执行，而进程7运行同样停留在`sleep_on`函数中。    
-
   最终的内存中各个进程内核堆栈以及`buffer_wait`变量的内容如下：    
-  ![各个进程内核堆栈以及`buffer_wait`变量的内容](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/3个进程的sleep_on分析.png)
-
+  ![各个进程内核堆栈以及`buffer_wait`变量的内容](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/3个进程的sleep_on分析.png)    
   所以要记录进程转变为睡眠(J)。对于不可中断睡眠(TASK_UNINTERRUPTIBLE)只能由`wake_up()`函数显式地从这个隐式的等待队列头部唤醒队列头进程，再由这个队列头部进程执行`schedule()`函数后面的`if (tmp) tmp->state=0;`通过由`tmp`变量链接起来的等待队列依次唤醒等待的进程。所以这里要记录进程唤醒(J)。    
 
 4. 不可中断睡眠interruptible_sleep_on    
