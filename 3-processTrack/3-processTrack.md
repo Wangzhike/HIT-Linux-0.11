@@ -319,7 +319,7 @@ int copy_page_tables(unsigned long from,unsigned long to,long size)
 	
 	可以看出，在Ubuntu上运行时，*process.c*程序的各个进程对应到具体pid的进程关系树如下：    
 	```relationship
-		    R
+	        R
 	       8877
            / \
 	     N1   N2
@@ -331,9 +331,9 @@ int copy_page_tables(unsigned long from,unsigned long to,long size)
 
   - 在修改过的Linux 0.11上运行    
     运行*process*可执行程序的输出：    
-	![在修改过的Linux 0.11上运行*process*可执行程序的输出](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_out.png)
+    ![在修改过的Linux 0.11上运行*process*可执行程序的输出](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_out.png)
 
-	可以看出，在修改过的Linux 0.11上运行时，*process.c*程序的各个进程对应到具体pid的进程关系树如下：    
+    可以看出，在修改过的Linux 0.11上运行时，*process.c*程序的各个进程对应到具体pid的进程关系树如下：    
 	```relationship
         R
         14
@@ -381,11 +381,9 @@ Linux 0.11将进程的状态分为5类：
 
 3. sys_pause主动睡觉    
   正如上面所提到的，当系统无事可做时(当前没有可以运行的进程)时就会调度进程0执行，所以`schedule`调度算法不会在意进程0的状态是不是就绪态(TASK_RUNNING)，进程0可以直接从睡眠切换到运行。而进程0会马上调用`pause()`API主动睡觉，在最终的内核实现函数`sys_pause`中又再次调用`schedule()`函数。也就是说，系统在无事可做时会触发这样一个循环：`schedule()`调度进程0执行，进程0调用`sys_pause()`主动睡觉，从而引发`schedule()`再次执行，接下来进程0又再次执行，循环往复，直到系统中有其他进程可以执行。而这个循环每执行一次的时间很短，所以在系统无事可做时，这个过程将十分频繁地重复，所以如果一五一十地记录下这个循环中进程0从睡眠(W)->运行(R)->睡眠(W)的过程，那么最终生成的log文件会因为这一频繁的循环而变得特别庞大，要比不这样记录的log文件大小上大上至少10倍量级！所以，为了简化log文件中这个不必要的重复信息，可以简单地认为在系统无事可做时，进程0的状态始终是等待(W)，等待有其他可运行的进程；也可以叫运行态(R)，因为它是唯一一个在CPU上运行的进程，只不过运行的效果是等待，我采用第二种简化。    
-  这是一五一十记录进程0从睡眠(W)->运行(R)->睡眠(W)循环生成的log文件(进程0的重复信息造成数据统计脚本*stat_log.py*因检测到重复数据而出错！！！)：    
-  ![记录进程0循环过程的log文件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log_large.png)
-
-  注意到该log文件有*61566*行！而简化后的log文件只有*526*行，行数上相差一百倍！！！
-
+  这是一五一十记录进程0从睡眠(W)->运行(R)->睡眠(W)循环生成的log文件(进程0的重复信息造成数据统计脚本*stat_log.py*因检测到重复数据而出错！！！)：   
+  ![记录进程0循环过程的log文件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log_large.png)    
+  注意到该log文件有*61566*行！而简化后的log文件只有*526*行，行数上相差一百倍！！！    
   这是简化的认为系统无事可做时进程0的状态始终是运行(R)生成的log文件：    
   ![简化认为系统无事可做时进程0的状态始终是运行生成的log文件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/process_log_normal.png)
 
@@ -397,8 +395,7 @@ Linux 0.11将进程的状态分为5类：
 	```c
 	tmp = NULL(*p);
 	buffer_wait(*p)= task[5](current);
-	```
-
+	```    
 	接着调用`schedule()`函数让出CPU切换到进程6执行，而进程5运行停留在`sleep_on`函数中。    
 
   2. 进程6调用sleep_on(&buffer_wait)    
@@ -406,8 +403,7 @@ Linux 0.11将进程的状态分为5类：
 	```c
     tmp = task[5](*p);
 	buffer_wait(*p) = task[6](current);
-	```
-
+	```    
 	接着调用`schedule()`函数让出CPU切换到进程7执行，而进程6运行停留在`sleep_on`函数中。    
 
   3. 进程7调用sleep_on(&buffer_wait)    
@@ -415,8 +411,7 @@ Linux 0.11将进程的状态分为5类：
 	```c
     tmp = task[6](*p);
 	buffer_wait(*p) = task[7](current);
-	```
-
+	```    
 	接着调用`schedule()`函数让出CPU切换到其他进程执行，而进程7运行同样停留在`sleep_on`函数中。    
 
   最终的内存中各个进程内核堆栈以及`buffer_wait`变量的内容如下：    
@@ -439,17 +434,14 @@ Linux 0.11将进程的状态分为5类：
 最后，我对添加了包含输出信息所在函数的log文件进行了分析，写一些还比较有价值的结论。    
 1. sys_waitpid调用是子进程先退出父进程才醒来    
   子进程退出的最后一步是通知父进程自己的退出，目的是唤醒正在等待此时间的父进程。从时序上说，应该是子进程先退出，父进程才醒来。下面来看下log文件中的一些印证了这个结论的记录：    
-  ![子进程先退出父进程才醒来1](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_1.png)
-
-  ![子进程先退出父进程才醒来2](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_2.png)
-
+  ![子进程先退出父进程才醒来1](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_1.png)    
+  ![子进程先退出父进程才醒来2](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_2.png)    
   ![子进程先退出父进程才醒来3](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/child_exit_first_3.png)
-
+  
   第三个图片实际上对应了执行`gcc -o process process.c`命令的过程：系统先建立进程8执行命令，因为gcc生成可执行文件分为预处理，编译，汇编，链接四个子阶段，分别对应进程9,10,11,12四个子进程的依次执行。    
 
 2. sleep_on调用是要退出的进程先wake_up显式唤醒睡眠进程才退出    
-  ![先wake_up再退出1](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/wake_before_exit-sleep_1.png)
-
+  ![先wake_up再退出1](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/wake_before_exit-sleep_1.png)    
   ![先wake_up再退出2](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/3-processTrack/picture/wake_before_exit-sleep_2.png)
 
 
