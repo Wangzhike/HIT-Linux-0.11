@@ -15,7 +15,7 @@
 参见[系统调用](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/2-syscall/2-syscall.md)
 
 ## 3. 进程运行轨迹的跟踪与统计
-参加[进程运行轨迹的跟踪与统计](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/3-processTrack/3-processTrack.md)，完成中......
+参加[进程运行轨迹的跟踪与统计](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/3-processTrack/3-processTrack.md)，修改时间片在我本地实验环境效果不明显，弃坑...，以后再研究是怎么回事:(
 
 ## 4. 基于内核栈切换的进程切换
 
