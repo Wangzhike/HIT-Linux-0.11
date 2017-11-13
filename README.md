@@ -6,7 +6,7 @@
 2017.03
 
 ## 0. 实验环境搭建
-**致谢[DeathKing/hit-oslab项目](https://github.com/DeathKing/hit-oslab)**，提供了Ubuntu环境下的实验环境的一键配置脚本及其所需的源代码，工具等材料。我在此基础上进行了一些小改动，使配置脚本可以在Ubuntu 16.04上使用。具体参见[Linux 0.11实验环境准备](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/prepEnv/准备安装环境.md)。
+**致谢[DeathKing/hit-oslab项目](https://github.com/DeathKing/hit-oslab)**，提供了Ubuntu环境下的实验环境的一键配置脚本及其所需的源代码，工具等材料。我在此基础上进行了一些小改动，使配置脚本可以在Ubuntu 16.04上使用。具体参见[Linux 0.11实验环境准备](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/0-prepEnv/准备安装环境.md)。
 
 ## 1. 操作系统的引导
 参见[操作系统的引导](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/1-boot/OS-booting.md)。
