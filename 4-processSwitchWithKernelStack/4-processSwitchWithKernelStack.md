@@ -49,14 +49,27 @@ Linux 0.11利用80x86硬件提供的机制：通过执行`ljmp next进程TSS描�
 #### 4. 进程切换的五段论
 
 ##### 4.1 利用中断进入内核引起用户栈到内核栈的切换
-前面[3. 中断和异常的硬件处理](#3-中断和异常的硬件处理)已经详细说明了：**利用中断进入内核时CPU通过TR寄存器找到TSS的内存位置，利用里面的`ss0`和`esp0`的值设置好内核栈，将用户栈的`ss`和`esp`的值压入到内核栈，建立起了用户栈和内核栈的联系，形象点说，即在用户栈和内核栈之间拉了一条线，形成了一套栈。同时将用户态的`eflags`,`cs`,`eip`的值也压入到内核栈，保存用户态程序的返回地址。将由中断号指定的IDT表中门描述符的段选择符和偏移量字段装载到`cs`和`eip`寄存器，所以将跳转到中断或异常处理程序的第一条指令执行，对系统调用而言就是`system_call`中断处理程序**。    
+前面[3. 中断和异常的硬件处理](#3-中断和异常的硬件处理)已经详细说明了：**利用中断进入内核时CPU通过TR寄存器找到TSS的内存位置，利用里面的`ss0`和`esp0`的值设置好内核栈(此时内核栈是空的，esp0应该设置为内核栈的栈顶地址)，将用户栈的`ss`和`esp`的值压入到内核栈，建立起了用户栈和内核栈的联系，形象点说，即在用户栈和内核栈之间拉了一条线，形成了一套栈。同时将用户态的`eflags`,`cs`,`eip`的值也压入到内核栈，保存用户态程序的返回地址。将由中断号指定的IDT表中门描述符的段选择符和偏移量字段装载到`cs`和`eip`寄存器，所以将跳转到中断或异常处理程序的第一条指令执行，对系统调用而言就是`system_call`中断处理程序**。    
 `system_call`接着将`ds`,`es`,`fs`这3个数据段寄存器，以及保存了系统调用参数的`edx`,`ecx`,`ebx`压栈，开始执行相应的系统调用。由于改写后的`fork`系统调用，要创建出新建进程能够完成切换的内核栈的样子，所以我们这里就以`fork`系统调用入手看一下后续的父进程的内核栈变化。    
 根据`eax`中保存的系统调用号`__NR_fork`的值，在`sys_call_table`数组中找到`fork`的内核实现函数`sys_fork`，并从`system_call`跳转到`sys_fork`执行，这个过程会将`system_call`的下一条指令的地址压栈。    
 
 `sys_fork`先调用`find_empty_process`为新建进程找到pid，它的值保存在变量`last_pid`中。最终返回新建进程在`task`数组中的下标`nr`。    
 返回到`sys_fork`后，它又将寄存器`gs`,`esi`,`edi`,`ebp`的值压栈，再将`find_empty_process`的返回值`nr`压栈，并跳转到`copy_process`执行，这个过程中又将`sys_fork`的下一条指令的地址压栈。所以刚进入到`copy_process`后内核栈的样子如下图所示：    
-![刚进入copy_process时内核栈的样子](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_copy_process.png)
+![刚进入copy_process时内核栈的样子](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_copy_process.png)    
+`copy_process`是`fork`系统调用的核心实现函数，对`fork`的修改就是在其中加入子进程的内核栈的初始化。    
+
 ##### 4.2 引发调度时通过内核栈找到PCB
+Linux 0.11把两个不同的数据结构紧凑地存放在一个单独为进程分配的一页内存中：一个是进程描述符PCB，另一个是进程的内核态堆栈。C语言使用下列的联合结构方便表示一个进程的PCB和内核栈：    
+```c
+union task_union {
+	struct task_struct task;
+	char stack[PAGE_SIZE];
+};
+```
+
+其中PCB位于这页内存的低地址，栈位于这页内存的高地址从末端向下增长。另外，当前进程的PCB由全局变量`current`指向。    
+当`sys_fork`返回到`system_call`之后，它首先将`sys_fork`的返回值即`last_pid`压栈，然后判断当前进程`current`是否需要调度。如果需要调度，则先将`ret_from_sys_call`函数的地址压栈，然后执行`schedule`调度函数。而在`schedule()`函数的末尾的`}`，相当于`ret`指令，会将`ret_from_sys_call`函数的地址作为返回地址出栈，所以`schedule`函数返回到`ret_from_sys_call`函数执行，而该函数是一段包含了`iret`指令的代码。所以在`system_call`跳转到`schedule`函数执行时的内核栈样子如下：    
+![由system_call进入schedule函数内核栈的样子](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_schedule.png)
 
 ##### 4.3 找到下一个进程的PCB完成PCB的切换
 
