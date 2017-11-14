@@ -72,6 +72,59 @@ union task_union {
 ![由system_call进入schedule函数内核栈的样子](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_schedule.png)
 
 ##### 4.3 找到下一个进程的PCB完成PCB的切换
+`schedule()`函数通过下面的代码找到下一个进程的PCB：    
+```c
+while (1) {
+		c = -1;
+		next = 0;
+		i = NR_TASKS;
+		p = &task[NR_TASKS];
+		while (--i) {
+			if (!*--p)
+				continue;
+			if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
+				c = (*p)->counter, next = i;
+		}
+		if (c) break;	/*　找到一个counter不等于0且是TASK_RUNNING状态中的counter最大的进程；或者当前系统没有一个可以运行的进程，此时c=-1, next=0，进程0得到调度，所以调度算法是不在意进程0的状态是不是TASK_RUNNING，这就意味这进程0可以直接从睡眠切换到运行！ */
+		for(p = &LAST_TASK ; p > &FIRST_TASK ; --p)
+			if (*p)
+				(*p)->counter = ((*p)->counter >> 1) +
+						(*p)->priority;
+	}
+```
+
+实际上，`next`就是下一个进程在`task`数组中的下标，利用`next`我们就可以找到下一个进程。我按照这个想法进行了实现实验，发现也可以顺利启动系统，但存在写些小问题：    
+1. gcc无法编译生成可执行文件    
+  用红色方框圈出    
+2. process程序运行错误，Root父进程没有等待到子进程N2结束就先结束，N2成为“孤儿进程”    
+  用绿色方框圈出    
+![next作为参数运行出现问题](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/process-error.png)
+
+而实验手册要求新定义一个PCB结构体的指针变量`pnext`来指向下一个进程，其初始值为进程0的PCB地址`&(init_task.task)`：    
+```c
+struct task_struct *pnext = &(init_task.task);
+......
+while (1) {
+		c = -1;
+		next = 0;
+		i = NR_TASKS;
+		p = &task[NR_TASKS];
+		while (--i) {
+			if (!*--p)
+				continue;
+			if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
+				c = (*p)->counter, next = i, pnext = *p;
+		}
+		if (c) break;	/*　找到一个counter不等于且是TASK_RUNNING状态中的counter最大的进程；或者当前系统没有一个可以运行的进程，此时c=-1, next=0，进程0得到调度，所以调度算法是不在意进程0的状态是不是TASK_RUNNING，这就意味这进程0可以直接从睡眠切换到运行！ */
+		for(p = &LAST_TASK ; p > &FIRST_TASK ; --p)
+			if (*p)
+				(*p)->counter = ((*p)->counter >> 1) +
+						(*p)->priority;
+	}
+```
+
+而采用`pnext`作为`switch_to`的参数，系统运行就是正常的！！！这里`next`变量和`pnext`应该指的是同一个进程呀！这个问题的原因还有待发现！！！    
+下一个进程的PCB指针就是`pnext`，在`switch_to`中通过交换`pnext`和`current`的值就完成了PCB的切换。    
 
 ##### 4.4 通过PCB找到内核栈完成内核栈的切换
 
