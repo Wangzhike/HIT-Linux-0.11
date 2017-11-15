@@ -14,6 +14,7 @@
 			4. [通过PCB找到内核栈完成内核栈的切换](#44-通过pcb找到内核栈完成内核栈的切换)
 			5. [通过内核栈找到用户栈利用iret中断返回到用户态程序和用户栈](#45-通过内核栈找到用户栈利用iret中断返回到用户态程序和用户栈)
 		5. [构造出新建进程能进行切换的内核栈](#5-构造出新建进程能进行切换的内核栈)
+		6. [函数调用堆栈](#6-函数调用堆栈)
 
 ## 实验内容
 
@@ -149,6 +150,7 @@ struct tss_struct *tss = &(init_task.task.tss);
 ![switch_to的内核栈](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_switch_to.png)
 ![copy_process的内核栈](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_copy_process.png)
 
-左图给出的`switch_to`内核栈中由`schedule`建立的自己的函数调用堆栈框架，即在栈中压入`system_call`的堆栈基值`ebp`(也就是内核堆栈段寄存器`ss0`的值)。关于函数调用堆栈的详细内容见下面的[6. 函数调用堆栈](#6-函数调用堆栈)。    
+左图给出的`switch_to`内核栈中有由`schedule`建立的自己的函数调用堆栈框架，即在栈中压入`system_call`的堆栈基值`ebp`(也就是内核堆栈段寄存器`ss0`的值)。关于函数调用堆栈的详细内容见下面的[6. 函数调用堆栈](#6-函数调用堆栈)。    
 
 
+#### 6. 函数调用堆栈
