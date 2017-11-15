@@ -144,5 +144,8 @@ struct tss_struct *tss = &(init_task.task.tss);
 ##### 4.5 通过内核栈找到用户栈利用iret中断返回到用户态程序和用户栈
 我们知道`switch_to`函数的最后一条指令是`ret`，执行该指令将返回到下一个进程(目标进程)的`schedule()`函数的末尾，遇到`}`，根据[4.2 引发调度时通过内核栈找到PCB](#42-引发调度时通过内核栈找到pcb)中给出的，在`system_call`跳转到`schedule`函数执行时的内核栈的样子，该`}`相当于`ret`指令将弹出`ret_from_sys_call`的地址，所以将跳转到`ret_from_sys_call`继续执行，它在进行一些信号处理工作后，将一些参数弹栈，最后执行`iret`指令切换到目标进程的用户态程序去执行，用户栈也跟着切换了过去。    
 
-#### 5. 构造出新建进程能进行切换的内核栈
+#### 5. 构造出新建进程能进行切换的内核栈的样子
+进程切换是由于`schedule`函数末尾调用了`switch_to(pnext, _LDT(next))`，而要为新建进程创建出能够切换的内核栈的样子是在由`sys_fork`调用的`copy_process`中完成的。根据前面[4.2 引发调度时通过内核栈找到PCB](#42-引发调度时通过内核栈找到pcb)给出的在`system_call`完成相应系统调用后跳转到`schedule`函数执行时的内核栈的样子，而正如刚提到的`schedule`又调用了`switch_to(pnext, _LDT(next))`，所以在`switch_to`函数中执行时的内核栈的样子如左图。而根据[4.1 利用中断进入内核引起用户栈到内核栈的切换](#41-利用中断进入内核引起用户栈到内核栈的切换)给出的刚进入`copy_process`后内核栈的样子，如右图所示。    
+![switch_to的内核栈](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_switch_to.png)
+![copy_process的内核栈](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_in_copy_process.png)
 
