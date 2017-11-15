@@ -172,3 +172,47 @@ struct tss_struct *tss = &(init_task.task.tss);
   ```
 
 #### 6. 函数调用堆栈
+先介绍几个和堆栈操作有关的指令：    
+- `pushl %eax`    
+  等价于：    
+  ```s
+  subl $4, %esp
+  movl %eax, (%esp)
+  ```
+
+- `popl %eax`    
+  等价于：    
+  ```s
+  movl (%esp), %eax
+  addl $4, %esp
+  ```
+
+- `call 0x12345`    
+  ```s
+  pushl %eip(*)
+  movl $0x12345, %eip(*)	# (*) 表示只是等效，无法替换为该代码
+  ```
+
+- `ret`    
+  ```s
+  popl %eip(*)
+  ```
+
+- `enter`        
+  ```s
+  pushl %ebp
+  movl %esp, %ebp
+  ```
+
+- `leave`    
+  ```s
+  movl %ebp, %esp
+  popl %ebp
+  ```
+
+其中，`ebp`用于记录当前函数调用堆栈基址。    
+
+1. 由调用者进行函数参数压栈以及返回地址压栈
+2. 由被调用函数建立自己的函数调用框架
+3. 由被调用函数在返回前拆除自己的函数调用框架
+4. 由调用者进行函数参数的弹出操作
