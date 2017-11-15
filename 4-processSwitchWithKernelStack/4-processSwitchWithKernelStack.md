@@ -152,10 +152,23 @@ struct tss_struct *tss = &(init_task.task.tss);
 
 左图给出的`switch_to`内核栈中有由`schedule`建立的自己的函数调用堆栈框架，即在栈中压入`system_call`的堆栈基值`ebp`(也就是内核堆栈段寄存器`ss0`的值)。关于函数调用堆栈的详细内容见下面的[6. 函数调用堆栈](#6-函数调用堆栈)。    
 对于父进程来说，从`switch_to`返回到`schedule`，再返回到`ret_from_sys_call`，从而回到用户态，这个前面已经分析过了。而子进程的内核栈构造有两种思路：一种是根据实验手册构造内核栈；另一种是将内核栈构造的父进程一样，利用和父进程一样的返回轨迹返回到用户态执行。不论采用哪一种方式，都必须保证新建进程的除了`eax`寄存器(存放`frok`的“返回值”)外，其他的寄存器都恢复到和父进程一样的值(通过pol对应的寄存器实现)，这样才能保证父子进程的状态一样。    
-1. 根据实验手册构造内核栈
-  由于`switch_to`中会将`ebp`,`eax`,`ebx`,`ecx`的值压栈，所以此处不需要将这4个寄存器的值压栈。那么根据右图给出的父进程内核栈的内容，结合实验手册，容易得出子进程内核栈的样子：    
+1. 根据实验手册构造内核栈    
+  由于`switch_to`中会将`ebp`,`eax`,`ebx`,`ecx`的值压栈，所以此处需要设置好这4个寄存器的值。那么根据右图给出的父进程内核栈的内容，结合实验手册，容易得出子进程内核栈的样子：    
 ![子进程内核栈](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_child_1.png)
 
-2. 将内核栈构造的和父进程一样
+2. 将内核栈构造的和父进程一样    
+  由于父进程的内核栈中已经有`ebp`,`eax`,`ebx`,`ecx`的值，而`switch_to`中又要重新压入，但是为了公用父进程的`ret_from_sys_call`返回函数，子进程的内核栈中要两次设置这4个寄存器的值。这种方式下子进程内核栈的样子：    
+![子进程内核栈](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/4-kernelStack_child_2.png)
+
+  而此时`first_return_from_kernel`的代码如下：    
+  ```c
+  first_return_from_kernel:
+	  popl %ebp
+	  popl %edi
+	  popl %esi
+	  pop %gs
+	  pushl $ret_from_sys_call
+	  ret
+  ```
 
 #### 6. 函数调用堆栈
