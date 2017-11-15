@@ -21,6 +21,9 @@
 ## 实验过程
 
 ### 实验结果
+修改为基于内核栈切换的进程切换后系统运行正常：    
+![gcc可以编译生成可执行文件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/run_1.png)
+![process程序正常运行](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/4-processSwitchWithKernelStack/picture/run_2.png)
 
 ### 实验分析
 
