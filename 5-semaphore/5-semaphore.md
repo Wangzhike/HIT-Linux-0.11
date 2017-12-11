@@ -4,6 +4,8 @@
 2. [实验过程](#实验过程)
 	- [实验结果](#实验结果)
 	- [实验分析](#实验分析)
+		1. [从生产者-消费者问题看进程同步](#1-从生产者-消费者问题看进程同步)
+			1. [竞争条件(Race Condition)](#11-竞争条件(Race Condition))
 
 ## 实验内容
 1. 在Ubuntu下编写程序，用信号量解决生产者-消费者问题    
@@ -73,4 +75,9 @@
   ![编译执行移植好的pc.c](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/5-semaphore/picture/experiment-result.png)
   ![执行结果](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/5-semaphore/picture/experiment-result-2.png)
 
+### 实验分析
+
+#### 1. 从生产者-消费者问题看进程同步    
+
+##### 1.1 竞争条件(Race Condition)    
 
