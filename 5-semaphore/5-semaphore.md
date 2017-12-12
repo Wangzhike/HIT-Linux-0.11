@@ -187,4 +187,78 @@ store register in x
 1. 自己创建等待队列    
   下图表明利用数组`Q[n]`来实现一个最多容纳*n-1*个元素的队列的一种方式。该队列有一个属性`Q.head`指向队头元素，而属性`Q.tail`则指向下一个新元素将要插入的位置。队列中的元素存放在位置`Q.head`,`Q.head+1`,...,`Q.tail-1`，并在最后的位置“环绕”，感觉好像位置1紧邻在位置n后面形成一个环序。当`Q.head == Q.tail`时，队列为空。初始时有`Q.head = Q.tail = 0`。如果试图从空队列中删除一个元素，则队列发生下溢。当`Q.head = Q.tail + 1`时，队列是满的，此时若试图插入一个元素，则队列发生上溢。    
   ![利用数组Q\[8\]实现一个队列](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/5-semaphore/picture/queue.png)    
+  在`sem_wait()`中需要阻塞当前进程时手动将`current->state`置为不可中断睡眠(TASK_UNINTERRUPTIBLE)。在`sem_post()`中如果等待队列非空，则将队头进程出队，并将其状态置为就绪(TASK_RUNNING)。    
+2. 利用sleep_on睡眠并形成等待队列，利用wake_up唤醒    
+  关于`sleep_on`函数中隐式等待队列的形成可以参考之前的[实验3：进程运行轨迹的跟踪与统计>实验过程>1. 进程状态的切换>4. 不可中断睡眠sleep_on 中的解释](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/3-processTrack/3-processTrack.md#1-进程状态的切换)    
+  而`wake_up`函数只是负责显式唤醒队列头进程。唤醒队列头之后，由`sleep_on`将队列中的后续进程挨个唤醒。    
+  1. sem_wait实现    
+    考虑到`sleep_on()`会形成一个隐式的等待队列，而`wake_up()`只要唤醒了等待队列的头结点，就可以依靠`sleep_on()`内部的判断语句：    
+	```c
+	if (tmp)
+		tmp->state = 0;
+	```
+	实现依次唤醒全部的等待进程。所以，`sem_wait()`的代码实现，必须考虑到这个情况。		
+	参考linux 0.11内部的代码，对于进程是否需要等待的判断，不能用简单的if语句，而应该用while()语句。假设在`sem_wait`中使用if语句：    
+	```c
+	if (sem->value < 0)
+		sleep_on(&(sem->queue));
+	```
+	现在sem=-1，生产者往缓冲区写入了一个数，sem=0<=0，此时应该将等待队列队首的进程唤醒。当被唤醒的队首进程再次调度执行，从`sleep_on()`函数退出，不会再执行此if判断，而直接从if语句退出，继续向下执行。而等待队列后面被唤醒的进程随后也会被调度执行，同样也不会执行if判断，退出if语句，继续向下执行，这显然是不应该的。因为生产者只往缓冲区写入了一个数，被等待队列的队首进程取走了，由于等待队列的队首进程已经取走了那个数，它应该已经将sem修改为sem=-1，其他等待的进程应该再次执行if判断，由于sem=-1<0，会继续睡眠。要让其他等待进程再次执行时，要重新进行判断，所以不能是if语句了，必须是下面的while语句：    
+	```c
+    while (sem->value < 0)
+		sleep_on(&(sem->queue));
+	```
+	下面是我第一次实现`sem_wait()`的代码：
+	
+	``` c
+	int sys_sem_wait(sem_t *sem)
+	{
+		cli();
+		sem->value--;
+		while( sem->value < 0 )
+			sleep_on(&(sem->queue))
+		sti();
+		return 0;
+	}
+	```
+	这么做的问题在于：假如当前有两个消费者因为缓冲区为空而阻塞，此时`sem->value = -2`。接着生产者往空缓冲区放入了一个数字，执行`sem_post`操作，将`value`值加1,此时`sem->value = -2+1 = -1 <= 0`，唤醒队首进程。队首进程从`sleep_on`函数退出，进入`while (sem->value < 0)`的判断，由于此时还有一个消费者阻塞，所以`sem->value = -1`，这就导致该队首进程又被阻塞，明明现在缓冲区有一个数可取，但之前阻塞的两个消费者仍是阻塞，不能取数。出错的原因在于：信号量减1的语句，要放在while判断后面，因为执行while判断时，进程有可能睡眠，而这种情况下，是不需要记录有多少个进程在睡眠的，因为`sleep_on`函数形成的隐式的等待队列已经记录下了进程的等待情况。    
+	正确的`sem_wait()`代码如下：
+	
+	``` c
+	int sys_sem_wait(sem_t *sem)
+	{
+		cli();
+		while( sem->value <= 0 )		//
+			sleep_on(&(sem->queue));	//这两条语句顺序不能颠倒，很重要，是关于互斥信号量能不
+		sem->value--;				//能正确工作的！！！
+		sti();
+		return 0;
+	}
+	```
+
+  2. sem_post的实现    
+    `sem_post`的实现必须结合`sem_wait`的实现分析。假设当前缓冲区为空，没有数可取，`sem->value = 0`。    
+	消费者1执行`sem_wait`，由于信号量减1的指令在while判断后面，此时`value = 0`，消费者1阻塞。    
+	消费者2执行`sem_wait`，同样`value = 0`，消费者2阻塞。    
+	生产者执行`sem_post`，信号量的值加1，此时`value = 1`，要唤醒等待队列的队首进程消费者1。所以`sem_post`中的if判断应该为：    
+	```c
+    if (sem->value <= 1)
+		wake_up(&(sem->queue));
+	```
+	消费者1执行，唤醒消费者2，跳出while判断，将信号量的值减1，此时`value = 0`。消费者1继续向下执行。    
+	如果消费者2接着执行，由于之前生产者放入到缓冲区的唯一一个数已经被消费者1取走，所以此时`value = 0`，消费者2执行while判断，不满足条件，重新阻塞。    
+	由此得到，`sem_post`中唤醒进程的判断条件为：`sem->value <= 1`。    
+	`sem_post`实现如下：    
+	``` c
+	int sys_sem_post(sem_t *sem)
+	{
+		cli();
+		sem->value++;
+		if( (sem->value) <= 1)
+			wake_up(&(sem->queue));
+		sti();
+		return 0;
+	}
+	```
+
 
