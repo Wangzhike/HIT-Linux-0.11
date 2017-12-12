@@ -143,7 +143,7 @@ store register in x
 
 很多其他组合也会带来不期望的结果。    
 `full++`就是竞争条件。**竞争条件(race condition)是指：当多个进程都企图对共享数据进行某种处理，而最后的结果又取决于进程运行的顺序，我们认为发生了竞争条件**。下图给出了关于竞争条件的一个说明：    
-![竞争条件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/5-semaphore/picture/race-conditions-sm.jpg)     
+![竞争条件](https://github.com/Wangzhike/HIT-Linux-0.11/raw/master/5-semaphore/picture/race-conditions-xl.jpg)     
 共享资源可以是以下任意一种：系统硬件、内核资源或内存中的数据。后者是最常见的，称为数据竞争(data reace)。    
 **竞争所发生的窗口——需要同步的代码区，称为临界区**。竞争的最根本的源头在于临界区是个窗口，在这个窗口内，正确的程序行为要求多个进程不要交替执行。为了阻止竞争条件，需要在这个窗口内执行同步访问操作，**确保多个进程对临界区以互斥的方式访问**。也就是说要让临界区成为一个原子操作。    
 
