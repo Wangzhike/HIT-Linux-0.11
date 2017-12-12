@@ -227,8 +227,8 @@ store register in x
 	    {
 		    cli();
 		    while( sem->value <= 0 )		//
-			    sleep_on(&(sem->queue));	//这两条语句顺序不能颠倒，很重要，是关于互斥信号量能不
-		    sem->value--;				//能正确工作的！！！
+			    sleep_on(&(sem->queue));	//这两条语句顺序不能颠倒，很重要，是关于信号量能不
+		    sem->value--;					//能正确工作的！！！
 		    sti();
 		    return 0;
 	    }
