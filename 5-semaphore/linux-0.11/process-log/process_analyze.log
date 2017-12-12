@@ -1,0 +1,1372 @@
+PID	STAT TIME	FUNC						Runing		J-Queen					W_T-Queen				W_UT-Queen
+1	N	48		copy_process				0
+1	J	48		copy_process							1
+0	J	48		schedule					-
+1	R	48		schedule					1
+2	N	49		copy_process
+2	J	49		copy_process							2
+1	W	49		sys_waitpid					-			2						1
+2	R	49		schedule					2									1
+3	N	64		copy_process													1
+3	J	64		copy_process							3						1
+2	E	68		do_exit						-			3						1
+1	J	68		schedule								3,1
+1	R	68		schedule					1			3	
+4	N	69		copy_process							3
+4	J	69		copy_process							3,4
+1	W	69		sys_waitpid					-			3,4						1
+3	R	69		schedule					3			4						1
+3	W	75		sys_pause					-			4						3|1
+4	R	75		schedule					4									3|1
+5	N	107		copy_process													3|1
+5	J	107		copy_process							5						3|1
+4	W	108		sleep_on					-			5						3|1						4		
+5	R	108		schedule					5									3|1						4
+4	J	110		wake_up									4						3|1
+5	E	110		do_exit						-			4						3|1
+4	R	110		schedule					4									3|1
+4	W	115		interruptible_sleep_on		-									4|3|1
+0	R	115		schedule					0									4|3|1
+4	J	902		wake_up									4						3|1
+4	R	902		schedule					4									3|1
+4	W	903		interruptible_sleep_on		-									4|3|1
+0	R	903		schedule					0									4|3|1
+4	J	953		wake_up						0			4						3|1
+4	R	953		schedule					4									3|1
+4	W	953		interruptible_sleep_on		-									4|3|1
+0	R	953		schedule					0									4|3|1
+4	J	1003	wake_up									4						3|1
+4	R	1003	schedule					4									3|1
+4	W	1003	interruptible_sleep_on		-									4|3|1
+0	R	1003	schedule					0									4|3|1
+4	J	1056	wake_up									4						3|1
+4	R	1056	schedule					4									3|1
+4	W	1056	interruptible_sleep_on		-									4|3|1
+0	R	1056	schedule					0									4|3|1
+4	J	1182	wake_up									4						3|1
+4	R	1182	schedule					4									3|1
+6	N	1184	copy_process													3|1
+6	J	1185	copy_process							6						3|1
+4	W	1185	sys_waitpid					-			6						4|3|1
+6	R	1185	schedule					6									4|3|1
+6	E	1191	do_exit						-									4|3|1
+4	J	1191	schedule								4						3|1
+4	R	1191	schedule					4									3|1
+7	N	1192	copy_process													3|1
+7	J	1192	copy_process							7						3|1
+4	J	1193	schedule					-			7,4						3|1
+7	R	1193	schedule					7			4						3|1
+7	E	1195	do_exit						-			4						3|1
+4	R	1195	schedule					4									3|1
+4	W	1196	interruptible_sleep_on		-									4|3|1
+0	R	1196	schedule					0									4|3|1
+4	J	1251	wake_up									4						3|1
+4	R	1251	schedule					4									3|1
+4	W	1251	interruptible_sleep_on		-									4|3|1
+0	R	1252	schedule					0									4|3|1
+4	J	2345	wake_up									4						3|1
+4	R	2345	schedule					4									3|1
+4	W	2345	interruptible_sleep_on		-									4|3|1
+0	R	2345	schedule					0									4|3|1
+4	J	2386	wake_up									4						3|1
+4	R	2386	schedule					4									3|1
+4	W	2386	interruptible_sleep_on		-									4|3|1
+0	R	2386	schedule					0									4|3|1
+4	J	2823	wake_up									4						3|1
+4	R	2823	schedule					4									3|1
+4	W	2823	interruptible_sleep_on		-									4|3|1
+0	R	2823	schedule					0									4|3|1
+4	J	2864	wake_up									4						3|1
+4	R	2864	schedule					4									3|1
+4	W	2864	interruptible_sleep_on		-									4|3|1
+0	R	2864	schedule					0									4|3|1
+4	J	2898	wake_up									4						3|1
+4	R	2898	schedule					4									3|1
+4	W	2898	interruptible_sleep_on		-									4|3|1
+0	R	2898	schedule					0									4|3|1
+4	J	2936	wake_up									4						3|1
+4	R	2936	schedule					4									3|1
+4	W	2936	interruptible_sleep_on		-									4|3|1
+0	R	2936	schedule					0									4|3|1
+4	J	3046	wake_up									4						3|1
+4	R	3046	schedule					4									3|1
+4	W	3046	interruptible_sleep_on		-									4|3|1
+0	R	3046	schedule					0									4|3|1
+3	J	3074	schedule								3						4|1
+3	R	3074	schedule					3									4|1
+3	W	3074	sys_pause					-									3|4|1
+0	R	3074	schedule					0									3|4|1
+4	J	3099	wake_up									4						3|1
+4	R	3100	schedule					4									3|1
+4	W	3100	interruptible_sleep_on		-									4|3|1
+0	R	3100	schedule					0									4|3|1
+4	J	3416	wake_up									4						3|1
+4	R	3417	schedule					4									3|1
+4	W	3417	interruptible_sleep_on		-									4|3|1
+0	R	3417	schedule					0									4|3|1
+4	J	3457	wake_up									4						3|1
+4	R	3457	schedule					4									3|1
+4	W	3457	interruptible_sleep_on		-									4|3|1
+0	R	3457	schedule					0									4|3|1
+4	J	3623	wake_up									4						3|1
+4	R	3623	schedule					4									3|1
+4	W	3623	interruptible_sleep_on		-									4|3|1
+0	R	3623	schedule					0									4|3|1
+4	J	3687	wake_up									4						3|1
+4	R	3687	schedule					4									3|1
+4	W	3687	interruptible_sleep_on		-									4|3|1
+0	R	3687	schedule
+4	J	4187	wake_up
+4	R	4187	schedule
+4	W	4187	interruptible_sleep_on
+0	R	4187	schedule
+4	J	4239	wake_up
+4	R	4239	schedule
+4	W	4239	interruptible_sleep_on
+0	R	4239	schedule
+4	J	4716	wake_up
+4	R	4717	schedule
+4	W	4717	interruptible_sleep_on
+0	R	4717	schedule
+4	J	4795	wake_up
+4	R	4795	schedule
+4	W	4796	interruptible_sleep_on
+0	R	4796	schedule
+4	J	4841	wake_up
+4	R	4841	schedule
+4	W	4841	interruptible_sleep_on
+0	R	4841	schedule
+4	J	4903	wake_up
+4	R	4903	schedule
+4	W	4903	interruptible_sleep_on
+0	R	4903	schedule
+4	J	5263	wake_up
+4	R	5263	schedule
+4	W	5263	interruptible_sleep_on
+0	R	5263	schedule
+4	J	5287	wake_up
+4	R	5287	schedule
+4	W	5287	interruptible_sleep_on
+0	R	5287	schedule
+4	J	5323	wake_up
+4	R	5323	schedule
+4	W	5323	interruptible_sleep_on
+0	R	5323	schedule
+4	J	5346	wake_up
+4	R	5346	schedule
+4	W	5346	interruptible_sleep_on
+0	R	5346	schedule
+4	J	5475	wake_up
+4	R	5475	schedule
+4	W	5475	interruptible_sleep_on
+0	R	5475	schedule
+4	J	5536	wake_up
+4	R	5536	schedule
+4	W	5536	interruptible_sleep_on
+0	R	5536	schedule
+4	J	5577	wake_up
+4	R	5577	schedule
+4	W	5577	interruptible_sleep_on
+0	R	5577	schedule
+4	J	5631	wake_up
+4	R	5631	schedule
+4	W	5631	interruptible_sleep_on
+0	R	5631	schedule
+4	J	5655	wake_up
+4	R	5655	schedule
+4	W	5655	interruptible_sleep_on
+0	R	5655	schedule
+4	J	5699	wake_up
+4	R	5699	schedule
+4	W	5699	interruptible_sleep_on
+0	R	5699	schedule
+4	J	5774	wake_up
+4	R	5774	schedule
+4	W	5775	interruptible_sleep_on
+0	R	5775	schedule
+4	J	5841	wake_up
+4	R	5841	schedule
+4	W	5841	interruptible_sleep_on
+0	R	5841	schedule
+4	J	6310	wake_up
+4	R	6310	schedule
+4	W	6310	interruptible_sleep_on
+0	R	6310	schedule
+4	J	6358	wake_up
+4	R	6358	schedule
+4	W	6358	interruptible_sleep_on
+0	R	6358	schedule
+4	J	6853	wake_up
+4	R	6853	schedule
+4	W	6853	interruptible_sleep_on
+0	R	6853	schedule
+4	J	6911	wake_up
+4	R	6911	schedule
+4	W	6911	interruptible_sleep_on
+0	R	6911	schedule
+4	J	6955	wake_up
+4	R	6955	schedule
+4	W	6955	interruptible_sleep_on
+0	R	6955	schedule
+4	J	7016	wake_up
+4	R	7016	schedule
+4	W	7016	interruptible_sleep_on
+0	R	7016	schedule
+4	J	7040	wake_up
+4	R	7040	schedule
+4	W	7040	interruptible_sleep_on
+0	R	7040	schedule
+4	J	7087	wake_up
+4	R	7087	schedule
+4	W	7087	interruptible_sleep_on
+0	R	7087	schedule
+4	J	7139	wake_up
+4	R	7139	schedule
+4	W	7140	interruptible_sleep_on
+0	R	7140	schedule
+4	J	7217	wake_up
+4	R	7217	schedule
+4	W	7217	interruptible_sleep_on
+0	R	7217	schedule
+4	J	7453	wake_up
+4	R	7453	schedule
+4	W	7453	interruptible_sleep_on
+0	R	7453	schedule
+4	J	7494	wake_up
+4	R	7494	schedule
+4	W	7494	interruptible_sleep_on		
+0	R	7494	schedule					0									4|3|1 
+4	J	7560	wake_up									4						3|1 
+4	R	7560	schedule					4									3|1
+4	W	7560	interruptible_sleep_on		-									4|3|1
+0	R	7561	schedule					0									4|3|1
+4	J	7617	wake_up									4						3|1
+4	R	7617	schedule					4									3|1
+4	W	7617	interruptible_sleep_on		-									4|3|1
+0	R	7617	schedule					0									4|3|1
+4	J	8090	wake_up									4						3|1
+4	R	8090	schedule					4									3|1
+8	N	8092	copy_process													3|1
+8	J	8093	copy_process							8						3|1
+4	W	8093	sys_waitpid					-			8						4|3|1
+8	R	8093	schedule					8									4|3|1
+9	N	8098	copy_process													4|3|1
+9	J	8098	copy_process							9						4|3|1
+8	W	8099	sys_waitpid					-			9						8|4|3|1
+9	R	8099	schedule					9									8|4|3|1
+9	E	8159	do_exit						-									8|4|3|1
+8	J	8159	schedule								8						4|3|1
+8	R	8159	schedule					8									4|3|1
+10	N	8160	copy_process													4|3|1
+10	J	8161	copy_process							10						4|3|1
+8	W	8161	sys_waitpid					-									8|4|3|1
+10	R	8161	schedule					10									8|4|3|1
+10	E	8295	do_exit						-									8|4|3|1
+8	J	8295	schedule								8						4|3|1
+8	R	8295	schedule					8									4|3|1
+11	N	8295	copy_process													4|3|1
+11	J	8296	copy_process							11						4|3|1
+8	W	8296	sys_waitpid					-			11						8|4|3|1
+11	R	8296	schedule					11									8|4|3|1
+11	E	8341	do_exit						-									8|4|3|1
+8	J	8341	schedule								8						4|3|1
+8	R	8341	schedule					8									4|3|1
+12	N	8343	copy_process													4|3|1
+12	J	8344	copy_process							12						4|3|1
+8	W	8344	sys_waitpid					-			12						8|4|3|1
+12	R	8344	schedule					12									8|4|3|1
+12	E	8425	do_exit						-									8|4|3|1
+8	J	8425	schedule								8						4|3|1
+8	R	8425	schedule					8									4|3|1
+8	E	8427	do_exit						-									4|3|1
+4	J	8427	schedule								4						3|1
+4	R	8427	schedule					4									3|1
+13	N	8427	copy_process													3|1
+13	J	8428	copy_process							13						3|1
+4	W	8428	sleep_on					-			13						3|1						4 
+13	R	8428	schedule					13									3|1						4
+4	J	8430	wake_up									4						3|1
+13	E	8431	do_exit						-			4						3|1
+4	R	8431	schedule					4									3|1
+4	W	8432	interruptible_sleep_on		-									4|3|1
+0	R	8432	schedule					0									4|3|1
+4	J	9737	wake_up									4						3|1
+4	R	9737	schedule					4									3|1
+4	W	9737	interruptible_sleep_on		-									4|3|1
+0	R	9737	schedule					0									4|3|1
+4	J	9790	wake_up									4						3|1
+4	R	9790	schedule					4									3|1
+4	W	9790	interruptible_sleep_on		-									4|3|1
+0	R	9790	schedule
+4	J	9902	wake_up
+4	R	9902	schedule
+4	W	9902	interruptible_sleep_on
+0	R	9902	schedule
+4	J	9976	wake_up
+4	R	9976	schedule
+4	W	9976	interruptible_sleep_on
+0	R	9976	schedule
+4	J	10077	wake_up
+4	R	10077	schedule
+4	W	10077	interruptible_sleep_on
+0	R	10077	schedule
+4	J	10138	wake_up
+4	R	10138	schedule
+4	W	10138	interruptible_sleep_on
+0	R	10138	schedule
+4	J	10182	wake_up
+4	R	10183	schedule
+4	W	10183	interruptible_sleep_on
+0	R	10183	schedule
+4	J	10262	wake_up
+4	R	10262	schedule
+4	W	10262	interruptible_sleep_on
+0	R	10262	schedule
+4	J	10517	wake_up
+4	R	10517	schedule
+4	W	10517	interruptible_sleep_on
+0	R	10517	schedule
+4	J	10545	wake_up
+4	R	10545	schedule
+4	W	10545	interruptible_sleep_on
+0	R	10546	schedule
+4	J	10587	wake_up
+4	R	10587	schedule
+4	W	10587	interruptible_sleep_on
+0	R	10587	schedule
+4	J	10612	wake_up
+4	R	10612	schedule
+4	W	10612	interruptible_sleep_on
+0	R	10613	schedule
+4	J	10788	wake_up
+4	R	10788	schedule
+4	W	10788	interruptible_sleep_on
+0	R	10788	schedule
+4	J	10850	wake_up
+4	R	10850	schedule
+4	W	10851	interruptible_sleep_on
+0	R	10851	schedule
+4	J	10930	wake_up
+4	R	10930	schedule
+4	W	10930	interruptible_sleep_on
+0	R	10930	schedule
+4	J	10970	wake_up
+4	R	10970	schedule
+4	W	10970	interruptible_sleep_on
+0	R	10970	schedule
+4	J	11007	wake_up
+4	R	11007	schedule
+4	W	11007	interruptible_sleep_on
+0	R	11007	schedule
+4	J	11043	wake_up
+4	R	11043	schedule
+4	W	11043	interruptible_sleep_on
+0	R	11043	schedule
+4	J	11131	wake_up
+4	R	11131	schedule
+4	W	11136	interruptible_sleep_on
+0	R	11136	schedule					0									4|3|1 
+4	J	11195	wake_up									4						3|1 
+4	R	11195	schedule					4									3|1
+4	W	11195	interruptible_sleep_on		-									4|3|1
+0	R	11196	schedule					0									4|3|1
+4	J	12048	wake_up									4						3|1
+4	R	12048	schedule					4									3|1
+14	N	12049	copy_process													3|1
+14	J	12049	copy_process							14						3|1
+4	W	12049	sys_waitpid					-			14						4|3|1
+14	R	12050	schedule					14									4|3|1
+15	N	12051	copy_process													4|3|1
+15	J	12051	copy_process							15						4|3|1
+16	N	12052	copy_process							15						4|3|1
+16	J	12052	copy_process							16|15					4|3|1
+14	W	12053	sys_waitpid					-			16|15					14|4|3|1
+16	R	12053	schedule					16			15						14|4|3|1
+17	N	12053	copy_process							15						14|4|3|1
+17	J	12053	copy_process							17|15					14|4|3|1
+16	W	12054	sys_pause					-			17|15					16|14|4|3|1
+17	R	12054	schedule					17			15						16|14|4|3|1
+17	J	12069	schedule					-			17|15					16|14|4|3|1
+15	R	12069	schedule					15			17						16|14|4|3|1
+18	N	12069	copy_process							17						16|14|4|3|1
+18	J	12069	copy_process							18|17					16|14|4|3|1
+19	N	12070	copy_process							18|17					16|14|4|3|1
+19	J	12070	copy_process							19|18|17				16|14|4|3|1
+15	J	12084	schedule					-			15|19|18|17				16|14|4|3|1
+19	R	12084	schedule					19			15|18|17				16|14|4|3|1
+19	J	12099	schedule					-			19|15|18|17				16|14|4|3|1
+18	R	12099	schedule					18			19|15|17				16|14|4|3|1
+18	J	12114	schedule					-			18|19|15|17				16|14|4|3|1
+19	R	12114	schedule					19			18|15|17				16|14|4|3|1
+19	J	12129	schedule					-			19|18|15|17				16|14|4|3|1
+18	R	12129	schedule					18			19|15|17				16|14|4|3|1
+18	J	12144	schedule					-			18|19|15|17				16|14|4|3|1
+17	R	12144	schedule					17			18|19|15				16|14|4|3|1
+16	J	12159	schedule								16|18|19|15				14|4|3|1
+17	J	12159	schedule					-			17|16|18|19|15			14|4|3|1
+16	R	12159	schedule					16			17|18|19|15				14|4|3|1
+16	W	12159	sys_pause
+15	R	12159	schedule
+15	J	12174	schedule
+19	R	12174	schedule
+19	J	12189	schedule
+18	R	12189	schedule
+18	J	12204	schedule
+17	R	12204	schedule
+17	J	12219	schedule
+15	R	12219	schedule
+15	J	12234	schedule
+19	R	12234	schedule
+19	J	12249	schedule
+18	R	12249	schedule
+16	J	12264	schedule
+18	J	12264	schedule
+16	R	12264	schedule
+16	W	12264	sys_pause
+17	R	12264	schedule
+17	J	12279	schedule
+15	R	12279	schedule
+15	J	12294	schedule
+19	R	12294	schedule
+19	J	12309	schedule
+18	R	12309	schedule
+18	J	12324	schedule
+17	R	12324	schedule
+17	J	12339	schedule
+15	R	12339	schedule
+15	J	12354	schedule
+19	R	12354	schedule
+16	J	12369	schedule
+19	J	12369	schedule
+16	R	12369	schedule
+16	W	12369	sys_pause
+18	R	12369	schedule
+18	J	12384	schedule
+17	R	12384	schedule
+17	J	12399	schedule
+15	R	12399	schedule
+15	J	12414	schedule
+19	R	12414	schedule
+19	J	12429	schedule
+18	R	12429	schedule
+18	J	12444	schedule
+17	R	12444	schedule
+17	J	12459	schedule
+15	R	12459	schedule
+16	J	12474	schedule
+15	J	12474	schedule
+16	R	12474	schedule
+16	W	12474	sys_pause
+19	R	12474	schedule
+19	J	12489	schedule
+18	R	12489	schedule
+18	J	12504	schedule
+17	R	12504	schedule
+17	J	12519	schedule
+15	R	12519	schedule
+15	J	12534	schedule
+19	R	12534	schedule
+19	J	12549	schedule
+18	R	12549	schedule
+18	J	12564	schedule
+17	R	12564	schedule
+16	J	12579	schedule
+17	J	12579	schedule
+16	R	12579	schedule
+16	W	12579	sys_pause
+15	R	12579	schedule
+15	J	12594	schedule
+19	R	12594	schedule
+19	J	12609	schedule
+18	R	12609	schedule
+18	J	12624	schedule
+17	R	12624	schedule
+17	J	12639	schedule
+15	R	12639	schedule
+15	J	12654	schedule
+19	R	12654	schedule
+19	J	12669	schedule
+18	R	12669	schedule
+16	J	12684	schedule
+18	J	12684	schedule
+16	R	12684	schedule
+16	W	12684	sys_pause
+17	R	12684	schedule
+17	J	12699	schedule
+15	R	12699	schedule
+15	J	12714	schedule
+19	R	12714	schedule
+19	J	12729	schedule
+18	R	12729	schedule
+18	J	12744	schedule
+17	R	12744	schedule
+17	J	12759	schedule
+15	R	12759	schedule
+15	J	12774	schedule
+19	R	12774	schedule
+16	J	12789	schedule
+19	J	12789	schedule
+16	R	12789	schedule
+16	W	12789	sys_pause
+18	R	12789	schedule
+18	J	12804	schedule
+17	R	12804	schedule
+17	J	12819	schedule
+15	R	12819	schedule
+15	J	12834	schedule
+19	R	12834	schedule
+19	J	12849	schedule
+18	R	12849	schedule
+18	J	12864	schedule
+17	R	12864	schedule
+17	J	12879	schedule
+15	R	12879	schedule
+16	J	12894	schedule
+15	J	12894	schedule
+16	R	12894	schedule
+16	W	12894	sys_pause
+19	R	12894	schedule
+19	J	12909	schedule
+18	R	12909	schedule
+18	J	12924	schedule
+17	R	12924	schedule
+17	J	12939	schedule
+15	R	12939	schedule
+15	J	12954	schedule
+19	R	12954	schedule
+19	J	12969	schedule
+18	R	12969	schedule
+18	J	12984	schedule
+17	R	12984	schedule
+16	J	12999	schedule
+17	J	12999	schedule
+16	R	12999	schedule
+16	W	12999	sys_pause
+15	R	12999	schedule
+15	J	13014	schedule
+19	R	13014	schedule
+19	J	13029	schedule
+18	R	13029	schedule
+18	J	13044	schedule
+17	R	13044	schedule
+17	J	13059	schedule
+15	R	13059	schedule
+15	J	13074	schedule
+19	R	13074	schedule
+19	J	13089	schedule
+18	R	13089	schedule
+16	J	13104	schedule
+18	J	13104	schedule
+16	R	13104	schedule
+16	W	13104	sys_waitpid
+17	R	13104	schedule
+17	J	13119	schedule
+15	R	13119	schedule
+15	J	13134	schedule
+19	R	13134	schedule
+19	J	13149	schedule
+18	R	13149	schedule
+18	J	13164	schedule
+17	R	13164	schedule
+17	J	13179	schedule
+15	R	13179	schedule
+15	J	13194	schedule
+19	R	13194	schedule
+19	J	13209	schedule
+18	R	13209	schedule
+18	J	13224	schedule
+17	R	13224	schedule
+17	J	13239	schedule
+15	R	13239	schedule
+15	J	13254	schedule
+19	R	13254	schedule
+19	J	13269	schedule
+18	R	13269	schedule
+18	W	13269	sys_pause
+17	R	13269	schedule
+17	J	13284	schedule
+15	R	13284	schedule
+15	J	13299	schedule
+19	R	13299	schedule
+19	J	13314	schedule
+17	R	13314	schedule
+17	J	13329	schedule
+15	R	13329	schedule
+15	J	13344	schedule
+19	R	13344	schedule
+19	J	13359	schedule
+17	R	13359	schedule
+18	J	13374	schedule
+17	J	13374	schedule
+18	R	13374	schedule
+18	W	13374	sys_pause
+15	R	13374	schedule
+15	J	13389	schedule
+19	R	13389	schedule
+19	J	13404	schedule
+17	R	13404	schedule
+17	J	13419	schedule
+15	R	13419	schedule
+15	J	13434	schedule
+19	R	13434	schedule
+19	J	13449	schedule
+17	R	13449	schedule
+17	J	13464	schedule
+15	R	13464	schedule
+18	J	13479	schedule
+15	J	13479	schedule
+18	R	13479	schedule
+18	W	13479	sys_pause
+19	R	13479	schedule
+19	J	13494	schedule
+17	R	13494	schedule
+17	J	13509	schedule
+15	R	13509	schedule
+15	J	13524	schedule
+19	R	13524	schedule
+19	W	13534	sys_pause
+17	R	13534	schedule
+17	J	13549	schedule
+15	R	13549	schedule
+15	J	13564	schedule
+17	R	13564	schedule
+17	J	13579	schedule
+15	R	13579	schedule
+18	J	13594	schedule
+15	J	13594	schedule
+18	R	13594	schedule
+18	W	13594	sys_pause
+17	R	13594	schedule
+17	J	13609	schedule
+15	R	13609	schedule
+15	J	13624	schedule
+17	R	13624	schedule
+19	J	13639	schedule
+17	J	13639	schedule
+19	R	13639	schedule
+19	W	13639	sys_pause
+15	R	13639	schedule
+15	J	13654	schedule
+17	R	13654	schedule
+17	J	13669	schedule
+15	R	13669	schedule
+15	J	13684	schedule
+17	R	13684	schedule
+18	J	13699	schedule
+17	J	13699	schedule
+18	R	13699	schedule
+18	W	13699	sys_pause
+15	R	13699	schedule
+15	J	13714	schedule
+17	R	13714	schedule
+17	J	13729	schedule
+15	R	13729	schedule
+19	J	13744	schedule
+15	J	13744	schedule
+19	R	13744	schedule
+19	W	13744	sys_pause
+17	R	13744	schedule
+17	W	13749	sys_pause
+15	R	13749	schedule
+18	J	13809	schedule
+15	J	13809	schedule
+18	R	13809	schedule
+18	W	13809	sys_pause
+15	R	13809	schedule
+19	J	13854	schedule
+17	J	13854	schedule
+15	J	13854	schedule
+19	R	13854	schedule
+19	W	13854	sys_pause
+17	R	13854	schedule
+17	W	13854	sys_pause
+15	R	13854	schedule
+18	J	13914	schedule
+15	J	13914	schedule
+18	R	13914	schedule
+18	W	13914	sys_pause
+15	R	13914	schedule
+19	J	13959	schedule
+17	J	13959	schedule
+15	J	13959	schedule
+19	R	13959	schedule
+19	W	13959	sys_pause
+17	R	13959	schedule
+17	W	13959	sys_pause
+15	R	13959	schedule
+18	J	14019	schedule
+15	J	14019	schedule
+18	R	14019	schedule
+18	E	14019	do_exit
+15	R	14019	schedule
+19	J	14064	schedule
+17	J	14064	schedule
+15	J	14064	schedule
+19	R	14064	schedule
+19	W	14064	sys_pause
+17	R	14064	schedule
+17	W	14064	sys_pause
+15	R	14064	schedule
+19	J	14169	schedule
+17	J	14169	schedule
+15	J	14169	schedule
+19	R	14169	schedule
+19	E	14169	do_exit
+17	R	14169	schedule
+17	W	14169	sys_pause
+15	R	14169	schedule
+15	E	14255	do_exit
+14	J	14255	schedule
+14	R	14255	schedule
+14	W	14255	sys_waitpid
+0	R	14255	schedule
+17	J	14270	schedule
+17	R	14270	schedule
+17	E	14270	do_exit
+16	J	14270	schedule
+16	R	14270	schedule
+16	E	14271	do_exit
+14	J	14271	schedule
+14	R	14271	schedule
+14	E	14271	do_exit
+4	J	14271	schedule
+4	R	14271	schedule
+20	N	14272	copy_process
+20	J	14272	copy_process
+4	W	14273	sleep_on
+20	R	14273	schedule
+4	J	14275	wake_up
+20	E	14275	do_exit
+4	R	14276	schedule
+4	W	14276	interruptible_sleep_on
+0	R	14276	schedule
+4	J	14793	wake_up
+4	R	14793	schedule
+4	W	14793	interruptible_sleep_on
+0	R	14793	schedule
+4	J	14866	wake_up
+4	R	14866	schedule
+4	W	14867	interruptible_sleep_on
+0	R	14867	schedule
+4	J	15174	wake_up
+4	R	15174	schedule
+4	W	15174	interruptible_sleep_on
+0	R	15174	schedule
+4	J	15232	wake_up
+4	R	15232	schedule
+4	W	15232	interruptible_sleep_on
+0	R	15232	schedule
+4	J	15825	wake_up
+4	R	15825	schedule
+4	W	15825	interruptible_sleep_on
+0	R	15825	schedule
+4	J	15883	wake_up
+4	R	15883	schedule
+4	W	15883	interruptible_sleep_on
+0	R	15883	schedule
+4	J	15921	wake_up
+4	R	15921	schedule
+4	W	15921	interruptible_sleep_on
+0	R	15921	schedule
+4	J	15974	wake_up
+4	R	15974	schedule
+4	W	15974	interruptible_sleep_on
+0	R	15974	schedule
+4	J	15986	wake_up
+4	R	15987	schedule
+4	W	15987	interruptible_sleep_on
+0	R	15987	schedule
+4	J	16027	wake_up
+4	R	16027	schedule
+4	W	16027	interruptible_sleep_on
+0	R	16027	schedule
+4	J	16128	wake_up
+4	R	16128	schedule
+4	W	16128	interruptible_sleep_on
+0	R	16128	schedule
+4	J	16182	wake_up
+4	R	16182	schedule
+4	W	16182	interruptible_sleep_on
+0	R	16183	schedule
+4	J	16245	wake_up
+4	R	16245	schedule
+4	W	16245	interruptible_sleep_on
+0	R	16245	schedule
+4	J	16298	wake_up
+4	R	16298	schedule
+4	W	16298	interruptible_sleep_on
+0	R	16298	schedule
+4	J	16315	wake_up
+4	R	16315	schedule
+4	W	16315	interruptible_sleep_on
+0	R	16315	schedule
+4	J	16364	wake_up
+4	R	16364	schedule
+4	W	16364	interruptible_sleep_on
+0	R	16364	schedule
+4	J	16392	wake_up
+4	R	16392	schedule
+4	W	16392	interruptible_sleep_on
+0	R	16392	schedule
+4	J	16458	wake_up
+4	R	16458	schedule
+4	W	16458	interruptible_sleep_on
+0	R	16458	schedule
+4	J	16522	wake_up
+4	R	16523	schedule
+4	W	16523	interruptible_sleep_on
+0	R	16523	schedule
+4	J	16539	wake_up
+4	R	16539	schedule
+4	W	16539	interruptible_sleep_on
+0	R	16539	schedule
+4	J	16586	wake_up
+4	R	16586	schedule
+4	W	16586	interruptible_sleep_on
+0	R	16586	schedule
+4	J	16620	wake_up
+4	R	16620	schedule
+4	W	16620	interruptible_sleep_on
+0	R	16620	schedule
+4	J	16749	wake_up
+4	R	16749	schedule
+4	W	16749	interruptible_sleep_on
+0	R	16750	schedule
+4	J	16807	wake_up
+4	R	16807	schedule
+4	W	16807	interruptible_sleep_on
+0	R	16807	schedule
+4	J	16859	wake_up
+4	R	16859	schedule
+4	W	16860	interruptible_sleep_on
+0	R	16860	schedule
+4	J	16919	wake_up
+4	R	16919	schedule
+4	W	16919	interruptible_sleep_on
+0	R	16919	schedule
+4	J	16945	wake_up
+4	R	16945	schedule
+4	W	16945	interruptible_sleep_on
+0	R	16945	schedule
+4	J	17006	wake_up
+4	R	17006	schedule
+4	W	17006	interruptible_sleep_on
+0	R	17006	schedule
+4	J	17017	wake_up
+4	R	17017	schedule
+4	W	17018	interruptible_sleep_on
+0	R	17018	schedule
+4	J	17084	wake_up
+4	R	17084	schedule
+4	W	17084	interruptible_sleep_on
+0	R	17084	schedule
+4	J	17094	wake_up
+4	R	17094	schedule
+4	W	17094	interruptible_sleep_on
+0	R	17094	schedule
+4	J	17159	wake_up
+4	R	17159	schedule
+4	W	17159	interruptible_sleep_on
+0	R	17159	schedule
+4	J	17243	wake_up
+4	R	17243	schedule
+21	N	17244	copy_process
+21	J	17245	copy_process
+4	W	17245	sys_waitpid
+21	R	17245	schedule
+21	E	17248	do_exit
+4	J	17248	schedule
+4	R	17248	schedule
+22	N	17249	copy_process
+22	J	17249	copy_process
+4	W	17249	sleep_on
+22	R	17249	schedule
+4	J	17252	wake_up
+22	E	17252	do_exit
+4	R	17252	schedule
+4	W	17253	interruptible_sleep_on
+0	R	17253	schedule
+4	J	17281	wake_up
+4	R	17281	schedule
+4	W	17281	interruptible_sleep_on
+0	R	17281	schedule
+4	J	18044	wake_up
+4	R	18044	schedule
+4	W	18044	interruptible_sleep_on
+0	R	18044	schedule
+4	J	18087	wake_up
+4	R	18087	schedule
+4	W	18087	interruptible_sleep_on
+0	R	18087	schedule
+4	J	18175	wake_up
+4	R	18175	schedule
+4	W	18175	interruptible_sleep_on
+0	R	18175	schedule
+4	J	18215	wake_up
+4	R	18215	schedule
+4	W	18215	interruptible_sleep_on
+0	R	18215	schedule
+4	J	18290	wake_up
+4	R	18290	schedule
+4	W	18290	interruptible_sleep_on
+0	R	18290	schedule
+4	J	18352	wake_up
+4	R	18352	schedule
+4	W	18352	interruptible_sleep_on
+0	R	18352	schedule
+4	J	18368	wake_up
+4	R	18368	schedule
+4	W	18368	interruptible_sleep_on
+0	R	18368	schedule
+4	J	18456	wake_up
+4	R	18456	schedule
+4	W	18456	interruptible_sleep_on
+0	R	18456	schedule
+4	J	18471	wake_up
+4	R	18471	schedule
+4	W	18471	interruptible_sleep_on
+0	R	18471	schedule
+4	J	18560	wake_up
+4	R	18560	schedule
+4	W	18560	interruptible_sleep_on
+0	R	18560	schedule
+4	J	18995	wake_up
+4	R	18995	schedule
+4	W	18995	interruptible_sleep_on
+0	R	18995	schedule
+4	J	19045	wake_up
+4	R	19045	schedule
+4	W	19045	interruptible_sleep_on
+0	R	19045	schedule
+4	J	19159	wake_up
+4	R	19159	schedule
+4	W	19165	interruptible_sleep_on
+0	R	19165	schedule
+4	J	19227	wake_up
+4	R	19227	schedule
+4	W	19227	interruptible_sleep_on
+0	R	19227	schedule
+4	J	19652	wake_up
+4	R	19652	schedule
+23	N	19653	copy_process
+23	J	19654	copy_process
+4	W	19654	sys_waitpid
+23	R	19654	schedule
+23	E	19657	do_exit
+4	J	19657	schedule
+4	R	19657	schedule
+24	N	19657	copy_process
+24	J	19658	copy_process
+4	W	19658	sleep_on
+24	R	19658	schedule
+4	J	19660	wake_up
+24	E	19661	do_exit
+4	R	19661	schedule
+4	W	19661	interruptible_sleep_on
+0	R	19661	schedule
+4	J	19712	wake_up
+4	R	19712	schedule
+4	W	19712	interruptible_sleep_on
+0	R	19712	schedule
+4	J	37511	wake_up
+4	R	37511	schedule
+4	W	37511	interruptible_sleep_on
+0	R	37511	schedule
+4	J	37586	wake_up
+4	R	37586	schedule
+4	W	37586	interruptible_sleep_on
+0	R	37586	schedule
+4	J	37599	wake_up
+4	R	37599	schedule
+4	W	37600	interruptible_sleep_on
+0	R	37600	schedule
+4	J	37659	wake_up
+4	R	37659	schedule
+4	W	37659	interruptible_sleep_on
+0	R	37659	schedule
+4	J	37739	wake_up
+4	R	37739	schedule
+4	W	37739	interruptible_sleep_on
+0	R	37739	schedule
+4	J	37790	wake_up
+4	R	37790	schedule
+4	W	37790	interruptible_sleep_on
+0	R	37790	schedule
+4	J	37850	wake_up
+4	R	37850	schedule
+4	W	37850	interruptible_sleep_on
+0	R	37851	schedule
+4	J	37909	wake_up
+4	R	37909	schedule
+4	W	37909	interruptible_sleep_on
+0	R	37909	schedule
+4	J	38019	wake_up
+4	R	38019	schedule
+25	N	38020	copy_process
+25	J	38021	copy_process
+4	W	38021	sys_waitpid
+25	R	38021	schedule
+25	E	38027	do_exit
+4	J	38027	schedule
+4	R	38027	schedule
+26	N	38027	copy_process
+26	J	38028	copy_process
+4	W	38028	sleep_on
+26	R	38028	schedule
+4	J	38030	wake_up
+26	E	38031	do_exit
+4	R	38031	schedule
+4	W	38032	interruptible_sleep_on
+0	R	38032	schedule
+4	J	38065	wake_up
+4	R	38065	schedule
+4	W	38065	interruptible_sleep_on
+0	R	38065	schedule
+4	J	46812	wake_up
+4	R	46812	schedule
+4	W	46812	interruptible_sleep_on
+0	R	46812	schedule
+4	J	46856	wake_up
+4	R	46856	schedule
+4	W	46856	interruptible_sleep_on
+0	R	46856	schedule
+4	J	46930	wake_up
+4	R	46930	schedule
+4	W	46930	interruptible_sleep_on
+0	R	46930	schedule
+4	J	46985	wake_up
+4	R	46985	schedule
+4	W	46985	interruptible_sleep_on
+0	R	46985	schedule
+4	J	47052	wake_up
+4	R	47053	schedule
+4	W	47053	interruptible_sleep_on
+0	R	47053	schedule
+4	J	47097	wake_up
+4	R	47097	schedule
+4	W	47097	interruptible_sleep_on
+0	R	47097	schedule
+4	J	47122	wake_up
+4	R	47123	schedule
+4	W	47123	interruptible_sleep_on
+0	R	47123	schedule
+4	J	47184	wake_up
+4	R	47184	schedule
+4	W	47184	interruptible_sleep_on
+0	R	47184	schedule
+4	J	47279	wake_up
+4	R	47279	schedule
+4	W	47279	interruptible_sleep_on
+0	R	47279	schedule
+4	J	47331	wake_up
+4	R	47331	schedule
+4	J	47331	wake_up
+4	J	47331	interruptible_sleep_on
+4	W	47331	interruptible_sleep_on
+0	R	47332	schedule
+4	J	48305	wake_up
+4	R	48305	schedule
+4	W	48305	interruptible_sleep_on
+0	R	48305	schedule
+4	J	48476	wake_up
+4	R	48477	schedule
+4	W	48477	interruptible_sleep_on
+0	R	48477	schedule
+4	J	48534	wake_up
+4	R	48535	schedule
+4	W	48535	interruptible_sleep_on
+0	R	48535	schedule
+4	J	48585	wake_up
+4	R	48585	schedule
+4	W	48585	interruptible_sleep_on
+0	R	48585	schedule
+4	J	49645	wake_up
+4	R	49645	schedule
+4	W	49645	interruptible_sleep_on
+0	R	49645	schedule
+4	J	49847	wake_up
+4	R	49847	schedule
+4	E	49848	do_exit
+1	J	49848	schedule
+1	R	49848	schedule
+27	N	49850	copy_process
+27	J	49851	copy_process
+1	W	49851	sys_waitpid
+27	R	49851	schedule
+28	N	49882	copy_process
+28	J	49883	copy_process
+27	W	49883	sleep_on
+28	R	49883	schedule
+27	J	49885	wake_up
+28	E	49886	do_exit
+27	R	49886	schedule
+27	W	49890	interruptible_sleep_on
+0	R	49890	schedule
+27	J	49904	wake_up
+27	R	49904	schedule
+27	W	49905	interruptible_sleep_on
+0	R	49905	schedule
+27	J	49950	wake_up
+27	R	49950	schedule
+27	W	49950	interruptible_sleep_on
+0	R	49950	schedule
+27	J	49998	wake_up
+27	R	49998	schedule
+27	W	49998	interruptible_sleep_on
+0	R	49998	schedule
+27	J	50136	wake_up
+27	R	50136	schedule
+27	W	50136	interruptible_sleep_on
+0	R	50136	schedule
+27	J	50652	wake_up
+27	R	50652	schedule
+27	W	50652	interruptible_sleep_on
+0	R	50652	schedule
+27	J	50700	wake_up
+27	R	50700	schedule
+27	W	50701	interruptible_sleep_on
+0	R	50701	schedule
+27	J	51256	wake_up
+27	R	51256	schedule
+27	W	51256	interruptible_sleep_on
+0	R	51256	schedule
+27	J	51300	wake_up
+27	R	51300	schedule
+27	W	51300	interruptible_sleep_on
+0	R	51300	schedule
+27	J	51375	wake_up
+27	R	51375	schedule
+27	W	51375	interruptible_sleep_on
+0	R	51376	schedule
+27	J	51459	wake_up
+27	R	51459	schedule
+27	W	51460	interruptible_sleep_on
+0	R	51460	schedule
+27	J	51479	wake_up
+27	R	51479	schedule
+27	W	51479	interruptible_sleep_on
+0	R	51479	schedule
+27	J	51526	wake_up
+27	R	51526	schedule
+27	W	51526	interruptible_sleep_on
+0	R	51526	schedule
+27	J	52524	wake_up
+27	R	52524	schedule
+27	W	52524	interruptible_sleep_on
+0	R	52524	schedule
+27	J	52574	wake_up
+27	R	52574	schedule
+27	W	52574	interruptible_sleep_on
+0	R	52574	schedule
+27	J	52669	wake_up
+27	R	52669	schedule
+27	W	52669	interruptible_sleep_on
+0	R	52669	schedule
+27	J	52710	wake_up
+27	R	52710	schedule
+27	W	52710	interruptible_sleep_on
+0	R	52710	schedule
+27	J	53245	wake_up
+27	R	53245	schedule
+29	N	53247	copy_process
+29	J	53248	copy_process
+27	W	53248	sys_waitpid
+29	R	53248	schedule
+29	E	53249	do_exit
+27	J	53249	schedule
+27	R	53249	schedule
+30	N	53249	copy_process
+30	J	53250	copy_process
+27	W	53250	sleep_on
+30	R	53250	schedule
+27	J	53252	wake_up
+30	E	53253	do_exit
+27	R	53253	schedule
+27	W	53253	interruptible_sleep_on
+0	R	53253	schedule
+27	J	53292	wake_up
+27	R	53292	schedule
+27	W	53292	interruptible_sleep_on
+0	R	53292	schedule
+27	J	53758	wake_up
+27	R	53758	schedule
+27	W	53758	interruptible_sleep_on
+0	R	53758	schedule
+27	J	53796	wake_up
+27	R	53796	schedule
+27	W	53796	interruptible_sleep_on
+0	R	53796	schedule
+27	J	53861	wake_up
+27	R	53861	schedule
+27	W	53861	interruptible_sleep_on
+0	R	53861	schedule
+27	J	53905	wake_up
+27	R	53905	schedule
+27	W	53905	interruptible_sleep_on
+0	R	53905	schedule
+27	J	53921	wake_up
+27	R	53921	schedule
+27	W	53921	interruptible_sleep_on
+0	R	53921	schedule
+27	J	53952	wake_up
+27	R	53952	schedule
+27	W	53952	interruptible_sleep_on
+0	R	53953	schedule
+27	J	54076	wake_up
+27	R	54076	schedule
+31	N	54077	copy_process
+31	J	54078	copy_process
+27	W	54078	sys_waitpid
+31	R	54078	schedule
+31	E	54079	do_exit
+27	J	54079	schedule
+27	R	54079	schedule
+32	N	54080	copy_process
+32	J	54080	copy_process
+27	W	54080	sleep_on
+32	R	54081	schedule
+27	J	54083	wake_up
+32	E	54083	do_exit
+27	R	54083	schedule
+27	W	54084	interruptible_sleep_on
+0	R	54084	schedule
+27	J	54107	wake_up
+27	R	54107	schedule
+27	W	54107	interruptible_sleep_on
+0	R	54107	schedule
+27	J	54144	wake_up
+27	R	54144	schedule
+33	N	54144	copy_process
+33	J	54145	copy_process
+27	W	54145	sleep_on
+33	R	54145	schedule
+27	J	54147	wake_up
+33	E	54148	do_exit
+27	R	54148	schedule
+27	W	54148	interruptible_sleep_on
+0	R	54148	schedule
+27	J	54189	wake_up
+27	R	54189	schedule
+27	W	54189	interruptible_sleep_on
+0	R	54189	schedule
+27	J	54261	wake_up
+27	R	54261	schedule
+34	N	54261	copy_process
+34	J	54262	copy_process
+27	W	54262	sleep_on
+34	R	54262	schedule
+27	J	54264	wake_up
+34	E	54265	do_exit
+27	R	54265	schedule
+27	W	54265	interruptible_sleep_on
+0	R	54265	schedule
+27	J	54314	wake_up
+27	R	54314	schedule
+27	W	54314	interruptible_sleep_on
+0	R	54314	schedule
+27	J	54857	wake_up
+27	R	54857	schedule
+35	N	54857	copy_process
+35	J	54858	copy_process
+27	W	54858	sleep_on
+35	R	54858	schedule
+27	J	54860	wake_up
+35	E	54861	do_exit
+27	R	54861	schedule
+27	W	54862	interruptible_sleep_on
+0	R	54862	schedule
+27	J	54916	wake_up
+27	R	54916	schedule
+27	W	54916	interruptible_sleep_on
+0	R	54916	schedule
+27	J	55493	wake_up
+27	R	55494	schedule
+27	W	55494	interruptible_sleep_on
+0	R	55494	schedule
+27	J	55543	wake_up
+27	R	55543	schedule
+27	W	55543	interruptible_sleep_on
+0	R	55544	schedule
+27	J	55622	wake_up
+27	R	55622	schedule
+27	W	55623	interruptible_sleep_on
+0	R	55623	schedule
+27	J	55707	wake_up
+27	R	55707	schedule
+27	W	55707	interruptible_sleep_on
+0	R	55708	schedule
+27	J	55715	wake_up
+27	R	55715	schedule
+27	W	55715	interruptible_sleep_on
+0	R	55715	schedule
+27	J	55756	wake_up
+27	R	55756	schedule
+27	W	55756	interruptible_sleep_on
+0	R	55756	schedule
+27	J	55818	wake_up
+27	R	55818	schedule
+27	W	55819	interruptible_sleep_on
+0	R	55819	schedule
+27	J	55865	wake_up
+27	R	55865	schedule
+27	W	55865	interruptible_sleep_on
+0	R	55865	schedule
+27	J	56106	wake_up
+27	R	56106	schedule
+27	E	56107	do_exit
+1	J	56107	schedule
+1	R	56107	schedule
+36	N	56110	copy_process
+36	J	56110	copy_process
+1	W	56110	sys_waitpid
+36	R	56111	schedule
+37	N	56142	copy_process
+37	J	56143	copy_process
+36	W	56143	sleep_on
+37	R	56143	schedule
+36	J	56145	wake_up
+37	E	56145	do_exit
+36	R	56145	schedule
+36	W	56150	interruptible_sleep_on
+0	R	56150	schedule
+36	J	56155	wake_up
+36	R	56155	schedule
+36	W	56155	interruptible_sleep_on
+0	R	56155	schedule
+36	J	56806	wake_up
+36	R	56806	schedule
+36	W	56806	interruptible_sleep_on
+0	R	56806	schedule
+36	J	56855	wake_up
+36	R	56855	schedule
+36	W	56855	interruptible_sleep_on
+0	R	56855	schedule
+36	J	56926	wake_up
+36	R	56926	schedule
+36	W	56926	interruptible_sleep_on
+0	R	56926	schedule
+36	J	56992	wake_up
+36	R	56992	schedule
+36	W	56992	interruptible_sleep_on
+0	R	56992	schedule
+36	J	57000	wake_up
+36	R	57000	schedule
+36	W	57000	interruptible_sleep_on
+0	R	57000	schedule
+36	J	57066	wake_up
+36	R	57066	schedule
+36	W	57066	interruptible_sleep_on
+0	R	57066	schedule
+36	J	57091	wake_up
+36	R	57091	schedule
+36	W	57091	interruptible_sleep_on
+0	R	57091	schedule
+36	J	57152	wake_up
+36	R	57152	schedule
+36	W	57152	interruptible_sleep_on
+0	R	57152	schedule
+36	J	57217	wake_up
+36	R	57217	schedule
+36	E	57218	do_exit
+1	J	57218	schedule
+1	R	57218	schedule
