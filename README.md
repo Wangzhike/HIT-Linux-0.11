@@ -20,7 +20,8 @@
 ## 4. 基于内核栈切换的进程切换
 参见[基于内核栈切换的进程切换](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/4-processSwitchWithKernelStack/4-processSwitchWithKernelStack.md)
 
-## 5. 信号量的实现和应用
+## 5. 信号量的实现和应用    
+参见[信号量的实现和应用](https://github.com/Wangzhike/HIT-Linux-0.11/blob/master/5-semaphore/5-semaphore.md)
 
 ## 6. 地址映射与共享
 
