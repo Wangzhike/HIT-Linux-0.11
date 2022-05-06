@@ -4,7 +4,7 @@ export OSLAB_INSTALL_PATH=$HOME
 install_gcc34() {
     echo -n "* Install gcc-3.4 for x86(i386) arch now......"
     if [ -z `which gcc-3.4` ]; then   #如果搜索到gcc-3.4的可执行文件目录不存在
-        tar zvxf gcc-3.4-ubuntu.tar.gz -C /tmp    #则安装gcc-3.4
+        tar zvxf ./gcc-3.4-ubuntu.tar.gz -C /tmp    #则安装gcc-3.4
         cd /tmp/gcc-3.4
         sudo ./inst.sh amd64
         cd -
